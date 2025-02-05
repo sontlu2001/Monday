@@ -1,0 +1,17 @@
+.application-step .ant-steps-item-content {
+	display: flex !important;
+	justify-content: center;
+	align-items: center;
+	white-space: nowrap;
+}
+
+.application-step .ant-steps-item-title {
+	font-weight: 500;
+}
+
+.application-step .ant-steps-item {
+	&.ant-steps-item-finish .ant-steps-item-title,
+	&.ant-steps-item-process .ant-steps-item-title {
+		color: #25b474 !important;
+	}
+}

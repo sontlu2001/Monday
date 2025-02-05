@@ -1,0 +1,107 @@
+@use "./scss/" as *;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--body-bg: #ffffff;
+	--txt-color: #000000;
+	--main-color: #f03c50;
+	--error-color: #961a1a;
+	--white: #fff;
+	--black: #000;
+	--box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+	--header-height: 8rem;
+	--header-shrink-height: 5rem;
+	--border-radius: 30px;
+}
+
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	-webkit-tap-highlight-color: transparent;
+}
+
+html {
+	font-size: 100%;
+
+	@include mobile {
+		font-size: 10%;
+	}
+
+	@include tablet {
+		font-size: 80%;
+	}
+}
+
+body {
+	font-weight: 400;
+	line-height: 1.5;
+
+	background-color: var(--body-bg);
+	color: var(--txt-color);
+
+	@include mobile {
+		margin-bottom: 3rem;
+	}
+}
+
+a {
+	text-decoration: none;
+	color: unset;
+}
+
+@media (hover: hover) {
+	a:hover {
+		color: var(--main-color);
+	}
+}
+
+button,
+input {
+	outline: 0;
+}
+
+ul {
+	list-style-type: none;
+}
+
+img {
+	max-width: 100%;
+}
+
+iframe {
+	border: 0;
+}
+
+.section {
+	padding: 1rem;
+}
+
+.section__header {
+	@include flex(center, space-between);
+}
+
+.text-danger {
+	color: var(--error-color);
+}
+
+// Custome scroolbar
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #888;
+	border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
+
+::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}

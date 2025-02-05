@@ -1,0 +1,26 @@
+@use "../../../scss/" as *;
+
+.ifs-sidebar .MuiPaper-root {
+	top: $header-height !important;
+	padding: 0 2px;
+}
+
+.ifs-collapsible-sidebar-item {
+	background-color: $collapsible-sidebar-bg;
+	margin: 4px 0;
+	border-radius: 8px;
+}
+
+.ifs-sidebar-item {
+	&.active {
+		&::before {
+			width: 5px;
+			content: "";
+			height: 80%;
+			background-color: $main-color;
+			position: absolute;
+			left: 0;
+			border-radius: $border-radius;
+		}
+	}
+}

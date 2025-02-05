@@ -1,0 +1,92 @@
+@use "../../scss/" as *;
+
+.logo {
+	font-size: 2.5rem;
+	font-weight: 600;
+
+	@include flex(center, unset);
+
+	img {
+		margin-right: 10px;
+		width: 50px;
+
+		@include mobile {
+			width: 30px;
+			margin-right: 0;
+		}
+	}
+}
+
+.ifs-header {
+	// z-index: 1300 !important;
+	height: $header-height;
+}
+
+.custom-header {
+	background: #fff;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 16px;
+	gap: 4px;
+	border-bottom: 1px solid #eeeeee;
+	height: $header-height;
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+
+	.header-left {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		min-width: 250px;
+		.menu-icon {
+			font-size: 20px;
+			cursor: pointer;
+		}
+
+		.header-title {
+			font-size: 18px;
+			font-weight: bold;
+		}
+	}
+
+	.header-search {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		.search-input {
+			width: 70%;
+		}
+	}
+
+	.header-user {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+
+		.user-name {
+			color: #1890ff;
+		}
+
+		.user-icon {
+			font-size: 20px;
+			cursor: pointer;
+			color: #1890ff;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.header-search {
+			display: none;
+		}
+
+		.user-name {
+			display: none;
+		}
+	}
+}
