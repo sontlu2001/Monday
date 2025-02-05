@@ -101,24 +101,25 @@ export interface IApplicationStatistics {
 }
 
 export interface ILoanOffer {
-	loanType: tLoanType;
-	loanPurpose: string;
-	applicationDate: string;
-	loanAmountOffer: number;
-	loanTenorOffer: number;
-	installments: number;
-	installmentFrequency: string;
-	installmentDate: string;
-	book: string
-	paymentType: string;
-	cbsScore: number;
-	cbsPd: number;
-	remarks: string;
-	monthlyInterestRate: number;
-	interestFrequency: string;
-	interestCalculationMethod: string;
-	adminFeePercentage : number;
-	adminFee : number;
-	lateFee: number;
-	lateFeePercentage: number;
+	id: number;
+  loanAmountOffer: number;
+  tenorMonthOffer: number;
+  interestMonth: number;
+  adminFeeRate: number;
+  lateFee: number;
+  payFrequency: string;
+  interestFrequency: string;
+  lateInterest: number;
+  interestCalculateMethod: string;
+  installments: number;
+  appointmentDatetime: string;
+  tier: string;
+  version: number;
+  isDocGenerated: string;
+  isDocUploaded: string;
+  remarks: string;
+  book1: string;
+  paymentType: string;
+  firstPayDate: string;
+	application: IApplication;
 }

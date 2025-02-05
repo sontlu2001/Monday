@@ -7,48 +7,32 @@ import ApplicationCard from "./ApplicationCard";
 import { Button } from "antd";
 import { HistoryOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
+import loanOfferApi from "../../../../api/module/loanOffer.api";
+import { toast } from "react-toastify";
+import { TOAST_MESSAGE } from "../../../../constants/general.constant";
 
 const LoanOffer = () => {
 	const [isEditLoanOffer, setEditLoanOffer] = useState(false);
 	const [isSaveLoanOffer, setSaveLoanOffer] = useState(false);
 	const paramsUrl = useParams();
 
-	const methods = useForm<ILoanOffer>({
-		defaultValues: {
-			loanType: "U",
-			loanPurpose: "Education",
-			applicationDate: "16-01-2024",
-			loanAmountOffer: 8000,
-			loanTenorOffer: 12,
-			installments: 6,
-			installmentFrequency: "Monthly",
-			installmentDate: "16-01-2024",
-			book: "Bank book",
-			paymentType: "GIRO",
-			cbsScore: 1800,
-			cbsPd: 3.5,
-			remarks: "Business plan validate",
-			monthlyInterestRate: 1.5,
-			interestFrequency: "Monthly",
-			interestCalculationMethod: "Reducing interest",
-			adminFee: 2,
-			adminFeePercentage: 0.5,
-			lateFee: 40,
-			lateFeePercentage: 5,
-		},
-	});
+	const methods = useForm<ILoanOffer>({});
 
-	const fetchLoanOfferDetail = () => {
-		// try {
-		// 	const res = 
-		// } catch (error) {
-			
-		// }
+	const fetchLoanOfferDetail = async() => {
+		try {
+			const response = await loanOfferApi.getDetailLoanOffer("4");
+			if (!response) {
+        toast.error(TOAST_MESSAGE.ERROR);
+        return;
+      }
+			methods.reset(response);
+		} catch (error) {
+		}
 	};
 
 	useEffect(() => {
 		fetchLoanOfferDetail();
-	}, [paramsUrl.slug]);
+	}, []);
 
 	return (
 		<FormProvider {...methods}>
