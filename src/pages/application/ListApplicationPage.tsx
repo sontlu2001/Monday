@@ -18,11 +18,17 @@ import ApplicationBrief from "./components/ApplicationBrief";
 import ApplicationSearch from "./components/ApplicationSearch";
 import ApplicationTag from "./components/ApplicationTag";
 import './application.scss'
+import { ITablePaginationConfig } from "../../interface/pagination.interface";
 
 const ListApplication = () => {
 	const navigate = useNavigate();
 
 	const [dataTable, setDataTable] = useState<IApplication[]>([]);
+	const [paginationConfig, setPaginationConfig] = useState<ITablePaginationConfig>({
+		current: 0,
+		pageSize: 20,
+		total: 0
+	})
 	const [loadingPage, setLoadingPage] = useState(true);
 
 	const [isSearching, setSearching] = useState(false);
@@ -52,9 +58,9 @@ const ListApplication = () => {
 		fetchData();
 	}, []);
 
-	const getListStatistics = async () => {
+	const getListStatistics = async (params?: IApplicationSearchInput) => {
 		try {
-			const response = await applicationApi.getStatistics();
+			const response = await applicationApi.getStatistics(params);
 			if (!response) throw new Error(TOAST_MESSAGE.ERROR);
 			setStatistics(response);
 		} catch (error) {
@@ -65,9 +71,14 @@ const ListApplication = () => {
 	const getListApplication = async (params?: IApplicationSearchInput) => {
 		try {
 			setSearching(true);
-			const response = await applicationApi.getListApplication(params);
+			const response = await applicationApi.getListApplication({
+				...params,
+				page: paginationConfig.current,
+				size: paginationConfig.pageSize
+			});
 			if (!response) throw new Error(TOAST_MESSAGE.ERROR);
-			setDataTable(response);
+			setDataTable(response.data);
+			setPaginationConfig({ ...paginationConfig, total: response.totalDocument })
 		} catch (error) {
 			toast.error(TOAST_MESSAGE.ERROR);
 		} finally {
@@ -75,13 +86,31 @@ const ListApplication = () => {
 		}
 	};
 
+	useEffect(() => {
+		getListApplication();
+	}, [paginationConfig.current, paginationConfig.pageSize]);
+
 	const onSearchApplication = useCallback((formData: IApplicationSearchInput) => {
 		getListApplication(formData);
+		getListStatistics(formData);
 	}, []);
 
 	const onResetFormSearch = () => {
 		getListApplication();
+		getListStatistics();
 	};
+
+	const handleTableChange: TableProps<IApplication>['onChange'] = (pagination, filters, sorter) => {
+		setPaginationConfig({
+			...paginationConfig,
+			current: pagination.current ? pagination.current - 1 : paginationConfig.current,
+			pageSize: pagination.pageSize ? pagination.pageSize : paginationConfig.pageSize
+		})
+		// `dataSource` is useless since `pageSize` changed
+		if (pagination.pageSize !== paginationConfig?.pageSize) {
+			setDataTable([]);
+		}
+	}
 
 	const columns: TableProps<IApplication>["columns"] = [
 		{
@@ -103,8 +132,8 @@ const ListApplication = () => {
 		},
 		{
 			title: "Borrower Name",
-			dataIndex: "dateOfApplication",
-			key: "dateOfApplication",
+			dataIndex: "borrower",
+			key: "borrower",
 			render: (_: string, record) => (
 				<a
 					href="#"
@@ -156,21 +185,29 @@ const ListApplication = () => {
 			title: "Last Updated",
 			dataIndex: "lastModifiedDate",
 			key: "lastModifiedDate",
-			render: (date: string) => formatDate(date, 'DD/MM/YYYY'),
+			render: (type: string, record) => formatDate(record.dateOfApplication, 'DD/MM/YYYY')
 		},
 	];
 
 	const collapseItem: CollapseProps["items"] = [
 		{
 			key: "1",
-			label: <span className="font-semibold">Application ({dataTable.length})</span>,
+			label: <span className="font-semibold">Application ({paginationConfig?.total})</span>,
 			children: (
 				<Table<IApplication>
-					scroll={{x:240}}
-					size="small"
-					dataSource={dataTable}
 					columns={columns}
-					rowKey="id"
+					rowKey={(record) => record.id}
+					dataSource={dataTable}
+					pagination={{
+						pageSize: paginationConfig?.pageSize ? paginationConfig?.pageSize : 20,
+						current: paginationConfig?.current ? paginationConfig?.current + 1 : 1,
+						total: paginationConfig?.total ? paginationConfig?.total : 0,
+						pageSizeOptions: [20, 50, 100],
+						showSizeChanger: true
+					}}
+					scroll={{ x: 240 }}
+					size="small"
+					onChange={handleTableChange}
 				/>
 			),
 		},

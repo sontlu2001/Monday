@@ -1,29 +1,25 @@
 import { Form, FormItemProps, Input, InputProps, Select } from "antd";
 import { memo } from "react";
 import { Controller, FieldValues } from "react-hook-form";
-import { IOption } from "../../interface/general.interface";
 import { formatCurrency } from "../../utils/utils";
 
 interface ICurrencyInputFieldProps<TFormValues extends FieldValues>
 	extends FormItemProps {
 	control: any;
 	name: keyof TFormValues;
-	currencyName: keyof TFormValues;
-	options: IOption<string>[];
+	currencyCode: string;
 	label: string;
 	layout?: FormItemProps["layout"];
 	inputProps?: InputProps;
 	required?: boolean;
 	placeHolder?: string;
-	defaultCurrency?: string;
 	disabled?: boolean;
 }
 
 const CurrencyInputField = <TFormValues extends Record<string, any>>({
 	control,
-	options,
 	name,
-	currencyName,
+	currencyCode,
 	inputProps,
 	label,
 	layout,
@@ -58,25 +54,7 @@ const CurrencyInputField = <TFormValues extends Record<string, any>>({
 						}}
 						value={formatCurrency(value)}
 						disabled={disabled}
-						addonBefore={
-							<Controller
-								name={currencyName as any}
-								control={control}
-								render={({ field: selectField }) => (
-									<Select
-										value={selectField.value}
-										onChange={(value) => selectField.onChange(value)}
-										style={{ width: 90 }}
-									>
-										{options.map((option) => (
-											<Select.Option key={option.value} value={option.value}>
-												{option.label}
-											</Select.Option>
-										))}
-									</Select>
-								)}
-							/>
-						}
+						addonBefore={currencyCode}
 					/>
 				</Form.Item>
 			)}

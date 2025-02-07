@@ -4,8 +4,7 @@ import { useFormContext } from "react-hook-form";
 import InfoDisplay from "../../../components/common/InfoDisplay";
 import { useBorrowerDetailContext } from "../../../context/BorrowerDetailContext";
 import { IBorrowerDetail } from "../../../interface/borrower.interface";
-import { formatDate, formatPhoneNumber } from "../../../utils/utils";
-import EmploymentAndIncomeDetails from "./EmploymentAndIncomeDetails";
+import { formatCurrency, formatDate, formatPhoneNumber } from "../../../utils/utils";
 
 const PersonalInfo = () => {
 	const { getValues } = useFormContext<IBorrowerDetail>();
@@ -142,7 +141,7 @@ const EmploymentIncomeDetails = () => {
 				)?.name}
 			/>
 			<InfoDisplay
-				value={`${formValue.currency} ${formValue.amountOfNoa}`}
+				value={`${formValue.currency} ${formatCurrency(formValue.amountOfNoa)}`}
 				label="Amount of NOA:"
 			></InfoDisplay>
 			<InfoDisplay
@@ -150,25 +149,25 @@ const EmploymentIncomeDetails = () => {
 				label="Year of NOA:"
 			></InfoDisplay>
 			<InfoDisplay
-				value={`${formValue.currency} ${formValue.month1Income}`}
+				value={`${formValue.currency} ${formatCurrency(formValue.month1Income)}`}
 				label="Income 1:"
 			></InfoDisplay>
 			<InfoDisplay
-				value={`${formValue.currency} ${formValue.grossMonthlyIncome}`}
+				value={`${formValue.currency} ${formatCurrency(formValue.grossMonthlyIncome)}`}
 				label="Gross Monthly Income:"
 			></InfoDisplay>
 			<br />
 			<InfoDisplay
-				value={`${formValue.currency} ${formValue.month2Income}`}
+				value={`${formValue.currency} ${formatCurrency(formValue.month2Income)}`}
 				label="Income 2:"
 			></InfoDisplay>
 			<InfoDisplay
-				value={`${formValue.currency} ${formValue.annualIncome}`}
+				value={`${formValue.currency} ${formatCurrency(formValue.annualIncome)}`}
 				label="Annual Income:"
 			></InfoDisplay>
 			<br />
 			<InfoDisplay
-				value={`${formValue.currency} ${formValue.month3Income}`}
+				value={`${formValue.currency} ${formatCurrency(formValue.month3Income)}`}
 				label="Income 3:"
 			></InfoDisplay>
 		</>

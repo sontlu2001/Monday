@@ -121,6 +121,7 @@ const PersonalInformation = () => {
         options={configOptionsMemo.listPropertyOwnerships}
       />
       <SelectInputField
+        showSearch
         control={control}
         name="countryAddress"
         label="Country"

@@ -41,7 +41,7 @@ export type tTheme = ObjectValues<typeof THEME>;
 export type tApplication = ObjectValues<typeof APPLICATION_TYPE>;
 export type tApplicationName = ObjectValues<typeof APPLICATION_TYPE_NAME>;
 
-export type tLoanType = ObjectValues<typeof LOAN_TYPE> | "";
+export type tLoanType = ObjectValues<typeof LOAN_TYPE>;
 export type tLoanTypeName = ObjectValues<typeof LOAN_TYPE_NAME>;
 
 export type tApplicationProduct = ObjectValues<typeof APPLICATION_PRODUCT_TYPE>;

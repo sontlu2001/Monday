@@ -33,11 +33,11 @@ export const SelectInputField = <TFormValues extends FieldValues>({
 				required={required}
 			>
 				<Select
-					{...props}
 					value={value}
 					onChange={(selectedValue) => {
 						onChange(selectedValue);
 					}}
+					{...props}
 					filterOption={(input, option) =>
 						String(option?.label).toLowerCase().includes(input.toLowerCase())
 					}

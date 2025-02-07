@@ -13,6 +13,7 @@ import EmploymentAndIncomeDetails from "./components/EmploymentAndIncomeDetails"
 import PersonalInformation from "./components/PersonalInformation";
 import { MESSAGE_BORROWER } from "./constants/borrower.constant";
 import { createBorrowerSchema } from "./validate/borrowerValidationSchema";
+import { formatDate, getCurrencyCode } from "../../utils/utils";
 
 dayjs.extend(customParseFormat);
 
@@ -41,7 +42,7 @@ const CreateBorrower = () => {
 			grossMonthlyIncome: 0,
 			annualIncome: 0,
 			specialization: undefined,
-			yearOfNoa: undefined,
+			yearOfNoa: "",
 			amountOfNoa: 0,
 			currency: "",
 			source: APPLICATION_TYPE.MONDAY,
@@ -60,7 +61,9 @@ const CreateBorrower = () => {
 			month2Income: Number(formData.month2Income),
 			month3Income: Number(formData.month3Income),
 			amountOfNoa: Number(formData.amountOfNoa),
-			yearOfNoa: dayjs(formData.yearOfNoa).year().toString(),
+			yearOfNoa: formatDate(formData.yearOfNoa, "YYYY"),
+			currency: getCurrencyCode(formData.nationality),
+			sprFlag: formData.idType === APPLICATION_TYPE.NRIC,
 			borrowerStatus: BORROWER_STATUS.ACTIVE,
 		} as IBorrower;
 

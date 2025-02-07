@@ -40,7 +40,7 @@ const BadgeList: React.FC<{ data: IStatusData[]}> = ({
 }) => (
 	<>
 		{data.map((item, index) => (
-			<div key={index} className="flex justify-between items-center">
+			<div key={index} className="flex items-center">
 					<Badge color={MAP_BADGE_COLOR_STATUS.get(item.label)} text={item.label} />
 					<div>
 						<Divider type="vertical" />

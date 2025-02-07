@@ -1,12 +1,15 @@
-import { Collapse, CollapseProps, Table } from 'antd';
-import React from 'react';
+import { Button, Card, Collapse, CollapseProps, Table } from 'antd';
+import ApplicationCard from './ApplicationCard';
 
 const columns = [
   {
     title: 'Date',
     dataIndex: 'date',
     key: 'date',
-    render: (text: string) => new Date(text).toLocaleDateString(),
+    render: (text: string) => {
+      const date = new Date(text);
+      return isNaN(date.getTime()) ? <strong>{text}</strong> : date.toLocaleDateString();
+    }
   },
   {
     title: 'Principal Amount',
@@ -34,25 +37,46 @@ const data = [
     date: '2025-01-01',
     principalAmount: 1000,
     interestAmount: 50,
-    totalAmount: 1050,
+    totalAmount: 1000,
+  },
+  {
+    key: '2',
+    date: '2025-01-02',
+    principalAmount: 2000,
+    interestAmount: 50,
+    totalAmount: 1000,
+  },
+  {
+    key: '3',
+    date: '2025-01-02',
+    principalAmount: 3000,
+    interestAmount: 50,
+    totalAmount: 2000,
   },
 ];
 
-const RepaymentSchedule = () => {
-  const collapseItem: CollapseProps["items"] = [
-    {
-      key: '1',
-      label: <p className='font-medium'>Repayment Schedule</p>,
-      children: <Table size='small' dataSource={data} columns={columns} scroll={{x:240}}></Table>,
-    },
-  ];
+const totalRow = {
+  key: 'total',
+  date: 'Total',
+  principalAmount: data.reduce((sum, item) => sum + item.principalAmount, 0),
+  interestAmount: data.reduce((sum, item) => sum + item.interestAmount, 0),
+  totalAmount: data.reduce((sum, item) => sum + item.totalAmount, 0),
+};
 
+const updatedData = [...data, totalRow];
+
+const RepaymentSchedule = () => {
   return (
-    <Collapse
-      items={collapseItem}
-      defaultActiveKey={['1']}
-      expandIconPosition='end'
-    ></Collapse>
+    <ApplicationCard
+				title={
+					<span className="font-medium">
+						Repayment Schedule
+					</span>
+				}
+				extraContent={<Button type="primary" key="close">Generate repayment</Button>}
+			>
+				<Table pagination={false} size='small' dataSource={updatedData} columns={columns} scroll={{x:240}} />
+			</ApplicationCard>
   );
 };
 

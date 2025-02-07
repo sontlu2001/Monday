@@ -1,14 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import CurrencyInputField from "../../../components/form/CurrencyInputField";
 import DatePickerField from "../../../components/form/DatePickerField";
 import { useBorrowerDetailContext } from "../../../context/BorrowerDetailContext";
-import { calculateAverage, calcYearlyAverage, calcYearlyIncome } from "../../../utils/utils";
+import { calculateAverage, calcYearlyAverage, calcYearlyIncome, getCurrencyCode } from "../../../utils/utils";
 import SelectInputField from "../../../components/form/SelectInputField";
 import { TextInputField } from "../../../components/form/TextInputField";
 
 export default function EmploymentAndIncomeDetails() {
 	const { control, setValue, getValues } = useFormContext();
+	const [currencyCode, setCurrencyCode] = useState<string>("");
 
 	const { configOptions } = useBorrowerDetailContext();
 
@@ -36,6 +37,11 @@ export default function EmploymentAndIncomeDetails() {
 		defaultValue: 0,
 	});
 
+	const nationality = useWatch({
+		control,
+		name: "nationality",
+	});
+
 	useEffect(() => {
 		if (month1Income || month2Income || month3Income) {
 			const grossMonthlyIncome = calculateAverage([month1Income, month2Income, month3Income]);
@@ -47,6 +53,12 @@ export default function EmploymentAndIncomeDetails() {
 			setValue("grossMonthlyIncome", calcYearlyAverage(amountOfNoa));
 		}
 	}, [month1Income, month2Income, month3Income, amountOfNoa, setValue]);
+
+	useEffect(() => {
+		if (nationality){
+			setCurrencyCode(getCurrencyCode(nationality));
+		}
+	}, [nationality]);
 	return (
 		<div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2">
 			<SelectInputField
@@ -86,10 +98,9 @@ export default function EmploymentAndIncomeDetails() {
 				placeholder="Select Income Document Type"
 			/>
 			<CurrencyInputField
-				options={configOptions.listCurrencies}
 				control={control}
 				name="amountOfNoa"
-				currencyName="currency"
+				currencyCode={currencyCode}
 				label="Amount of NOA"
 				placeHolder="Enter Amount of NOA"
 				layout="vertical"
@@ -106,48 +117,43 @@ export default function EmploymentAndIncomeDetails() {
 				<p>Past 3 Months Income</p>
 			</div>
 			<CurrencyInputField
-				options={configOptions.listCurrencies}
 				control={control}
 				name="month1Income"
-				currencyName="currency"
+				currencyCode={currencyCode}
 				placeHolder="Enter Month 1 Income"
 				label="Month 1"
 				layout="vertical"
 			/>
 			<CurrencyInputField
-				options={configOptions.listCurrencies}
 				control={control}
 				name="grossMonthlyIncome"
-				currencyName="currency"
+				currencyCode={currencyCode}
 				label="Gross Monthly Income"
 				layout="vertical"
 				disabled
 			/>
 			<br />
 			<CurrencyInputField
-				options={configOptions.listCurrencies}
 				control={control}
 				name="month2Income"
-				currencyName="currency"
+				currencyCode={currencyCode}
 				placeHolder="Enter Month 2 Income"
 				label="Month 2"
 				layout="vertical"
 			/>
 			<CurrencyInputField
-				options={configOptions.listCurrencies}
 				control={control}
 				name="annualIncome"
-				currencyName="currency"
+				currencyCode={currencyCode}
 				label="Annual Income"
 				layout="vertical"
 				disabled
 			/>
 			<br />
 			<CurrencyInputField
-				options={configOptions.listCurrencies}
 				control={control}
 				name="month3Income"
-				currencyName="currency"
+				currencyCode={currencyCode}
 				placeHolder="Enter Month 3 Income"
 				label="Month 3"
 				layout="vertical"
