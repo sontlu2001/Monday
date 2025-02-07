@@ -56,7 +56,7 @@ export const formatDate = (date?: string, format = "YYYY-MM-DD") => {
 };
 
 export const formatCurrency = (value: string| number): string => {
-	if (!value) return "";
+	if (!value) return "0";
 
 	if (typeof value === "number") {
     value = value.toString();
@@ -114,3 +114,15 @@ export const getMasterDataName = (
 	const option = options.find((opt) => opt.value === optionValue);
 	return option ? option.name : "";
 };
+
+export const getCurrencyCode = (currency: string): string => {
+	return currency.split("_")[0].toUpperCase();
+};
+
+export const getFutureDate = (days: number, format = "DD/MM/YYYY"): string => {
+	return dayjs().add(days, 'day').utc().format();
+}
+
+export const calcAdminFee = (loanAmount: number, adminFeeRate: number, currencyCode: string) => {
+	return `${currencyCode} ${formatCurrency(loanAmount * adminFeeRate)}`;
+}

@@ -1,5 +1,6 @@
 import { IApplicationDetail } from "../../../interface/application.interface";
 import { IBorrower } from "../../../interface/borrower.interface";
+import { INITIAL_LOAN_OFFER } from "../../../interface/loanOffer.interface";
 
 export const INITIAL_BORROWER: IBorrower = {
 	id: 0,
@@ -55,4 +56,9 @@ export const INITIAL_APPLICATION_DETAIL: IApplicationDetail = {
 	frdAppId: "",
 	source: "",
 	borrower: INITIAL_BORROWER,
+	loanOffer: INITIAL_LOAN_OFFER,
 };
+
+export const INITIAL_DUE_DILIGENCE = {
+	
+}

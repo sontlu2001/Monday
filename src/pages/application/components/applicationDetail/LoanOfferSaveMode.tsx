@@ -1,90 +1,87 @@
 import InfoDisplay from '../../../../components/common/InfoDisplay';
 import { useApplicationDetailContext } from '../../../../context/ApplicationDetailContext';
-import { formatDate } from '../../../../utils/utils';
+import { calcAdminFee, formatCurrency, formatDate, getFutureDate, getMasterDataName } from '../../../../utils/utils';
 import SelectInputField from '../../../../components/form/SelectInputField';
-import { ILoanOffer } from '../../../../interface/application.interface';
-import { useForm } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { MAP_LOAN_TYPE_NAME } from '../../../../constants/general.constant';
-import { useState } from 'react';
-import { IOption } from '../../../../interface/general.interface';
 import DatePickerField from '../../../../components/form/DatePickerField';
-import { TextInputField } from '../../../../components/form/TextInputField';
+import { useEffect } from 'react';
+import { ILoanOffer } from '../../../../interface/loanOffer.interface';
 
 const LoanOfferSaveMode = () => {
-  const { applicationDetail } = useApplicationDetailContext();
-  const { handleSubmit, control } = useForm<ILoanOffer>();
-  const [listInstallmentFrequency, setListInstallmentFrequency] = useState<IOption<string>[]>([
-    { label: "Monthly", value: "Monthly" },
-    { label: "Weekly", value: "Weekly" },
-    { label: "Bi-weekly", value: "Bi-weekly" },
-  ]);
-  const [listInterestCalculationMethod, setListInterestCalculationMethod] = useState<IOption<string>[]>([
-    { label: "Reducing interest", value: "Reducing interest" },
-  ]);
- 
+  const { applicationDetail, configOptions } = useApplicationDetailContext();
+  const { handleSubmit, control, reset } = useFormContext<ILoanOffer>();
+
+  useEffect(() => {
+    const firstPayDate = applicationDetail?.loanOffer.firstPayDate ?? getFutureDate(30);
+  
+    reset((prevData: any) => ({
+      ...prevData,
+      firstPayDate,
+      interestFrequency: applicationDetail?.loanOffer?.interestFrequency,
+      payFrequency: applicationDetail?.loanOffer?.payFrequency,
+      interestCalculateMethod: applicationDetail?.loanOffer?.interestCalculateMethod,
+    }));
+  }, [applicationDetail, reset]);
 
   return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-60 gap-4">
-        <InfoDisplay value={MAP_LOAN_TYPE_NAME.get(applicationDetail?.loanType || "S")} label="Loan Type:" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-10 gap-4">
+        <InfoDisplay value={MAP_LOAN_TYPE_NAME.get(applicationDetail?.loanType)} label="Loan Type:" />
         <InfoDisplay value={applicationDetail?.loanPurpose} label="Loan Purpose:" />
-        <InfoDisplay value={formatDate(applicationDetail?.dateOfApplication)} label="Application Date:" />
-        <InfoDisplay value={applicationDetail?.loanAmount} label="Loan Amount Offer:" />
+        <InfoDisplay value={formatDate(applicationDetail?.dateOfApplication, "DD/MM/YYYY")} label="Application Date:" />
+        <InfoDisplay value={`${applicationDetail?.borrower.currency} ${formatCurrency(applicationDetail?.loanOffer?.loanAmountOffer || 0)}`} label="Loan Amount Offer:" />
         <div className="col-span-2">
-          <InfoDisplay value={applicationDetail?.tenorMonths} label="Loan Tenor Offer:" />
+          <InfoDisplay value={`${applicationDetail?.tenorMonths} Months`} label="Loan Tenor Offer:" />
         </div>
-        <InfoDisplay value={"Test"} label="Installments:" />
+        <InfoDisplay value={applicationDetail?.loanOffer?.installments} label="Installments:" />
         <SelectInputField
-          options={listInstallmentFrequency}
-          name="installmentFrequency"
+          options={configOptions.listInstallmentFrequency}
+          name="payFrequency"
           label="Installment Frequency:"
           layout='horizontal'
           control={control} />
         <DatePickerField<ILoanOffer>
           control={control}
-          name="installmentDate"
+          name="firstPayDate"
           label="1st Installment Date:"
           layout='horizontal'
         />
-        <InfoDisplay value={"Test"} label="1st Installment Date:" />
-        <InfoDisplay value={"Test"} label="Book 1:" />
+        <InfoDisplay value={applicationDetail?.loanOffer?.book1} label="Book 1:" />
         <div className="col-span-2">
-          <InfoDisplay value={"Test"} label="Payment Type:" />
+        <InfoDisplay 
+					value={
+						getMasterDataName(configOptions.listPaymentType, applicationDetail?.loanOffer?.paymentType)
+					} 
+					label="Payment Type:"
+				/>
         </div>
-        <InfoDisplay value={"Test"} label="CBS score:" />
-        <InfoDisplay value={"Test"} label="CBS PD:" />
+        <InfoDisplay value={""} label="CBS score:" />
+        <InfoDisplay value={""} label="CBS PD:" />
         <InfoDisplay value={applicationDetail?.remarks} label="Remarks:" />
         <div className="col-span-full">
           <p className="font-bold">Interest</p>
         </div>
-        <InfoDisplay value={"Test"} label="Monthly Interest Rate:" />
+        <InfoDisplay value={`${applicationDetail?.loanOffer?.interestMonth || 0}%`} label="Monthly Interest Rate:" />
         <SelectInputField
-          options={listInstallmentFrequency}
+          options={configOptions.listLoanInterestFrequency}
           name="interestFrequency"
           label="Interest Frequency:"
           layout='horizontal'
           control={control} />
         <SelectInputField
-          options={listInterestCalculationMethod}
-          name="interestCalculationMethod"
+          options={configOptions.listInterestCalculationMethod}
+          name="interestCalculateMethod"
           label="Interest Calculation Method:"
           layout='horizontal'
           control={control} />
         <div className="col-span-full">
           <p className="font-bold">Fees</p>
         </div>
-        <InfoDisplay value={"Test"} label="Admin Fee (%)" />
-        <div className="col-span-2">
-          <InfoDisplay value={"Test"} label="Admin Fee :" />
-        </div>
-        <TextInputField<ILoanOffer>
-          control={control}
-          name="lateFee"
-          layout='horizontal'
-          label="Late Interest (%)"
-        />
-        <div className="col-span-2">
-          <InfoDisplay value={"Test"} label="Late Fee :" />
-        </div>
+        <InfoDisplay value={applicationDetail?.loanOffer?.adminFeeRate || 0} label="Admin Fee (%)" />
+        <InfoDisplay value={calcAdminFee(applicationDetail?.loanOffer?.loanAmountOffer, applicationDetail?.loanOffer?.adminFeeRate, applicationDetail?.borrower?.currency)} label="Admin Fee :" />
+        <div></div>
+        <InfoDisplay value={applicationDetail?.loanOffer?.lateInterest || 0} label="Late Interest (%)" />
+        <InfoDisplay value={`${applicationDetail?.borrower.currency} ${formatCurrency(applicationDetail?.loanOffer?.lateFee || 0)}`} label="Late Fee :" />
       </div>
   )
 }

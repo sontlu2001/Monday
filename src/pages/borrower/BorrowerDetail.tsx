@@ -4,12 +4,13 @@ import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import borrowerApi from "../../api/module/borrower.api";
 import SkeletonLoading from "../../components/common/SkeletonLoading";
-import { TOAST_MESSAGE } from "../../constants/general.constant";
+import { APPLICATION_TYPE, TOAST_MESSAGE } from "../../constants/general.constant";
 import { useBorrowerDetailContext } from "../../context/BorrowerDetailContext";
 import { IBorrowerDetail } from "../../interface/borrower.interface";
 import BorrowerDetailsTabContent from "./components/BorrowerDetailsTabContent";
 import BorrowerInfo from "./components/BorrowerInfo";
 import BorrowerStatusTag from "./components/BorrowerStatusTag";
+import { formatDate, getCurrencyCode } from "../../utils/utils";
 
 const BorrowerDetail = () => {
 	const {
@@ -20,11 +21,7 @@ const BorrowerDetail = () => {
 		isEditMode,
 	} = useBorrowerDetailContext();
 
-	const methods = useForm<IBorrowerDetail>({
-		defaultValues: {
-			currency: "SGD",
-		},
-	});
+	const methods = useForm<IBorrowerDetail>({});
 
 	useEffect(() => {
 		updateFormValue(borrowerDetails);
@@ -33,13 +30,18 @@ const BorrowerDetail = () => {
 	const updateFormValue = (formData: IBorrowerDetail) => {
 		methods.reset({
 			...formData,
-			currency: "SGD",
 		});
 	};
 
 	const onSaveBorrower = async (formData: IBorrowerDetail) => {
+		const borrowerData = {
+			...formData,
+			yearOfNoa: formatDate(formData.yearOfNoa, "YYYY"),
+			sprFlag: formData.idType === APPLICATION_TYPE.NRIC,
+			currency: getCurrencyCode(formData.nationality),
+		}
 		try {
-			const response = await borrowerApi.updateBorrower(formData);
+			const response = await borrowerApi.updateBorrower(borrowerData);
 			setBorrowerDetails(response)
 			toast.success(TOAST_MESSAGE.SUCCESS);
 		} catch (error) {
@@ -82,7 +84,7 @@ const BorrowerDetail = () => {
 							<span className="text-2xl font-semibold">
 								{methods.getValues().fullName}
 							</span>
-							{/* <BorrowerStatusTag status={methods.getValues().borrowerStatus}></BorrowerStatusTag> */}
+							<BorrowerStatusTag status={methods.getValues().borrowerStatus}></BorrowerStatusTag>
 						</div>
 						{/* <div>
 							<Button type="primary" color="danger" variant="solid">

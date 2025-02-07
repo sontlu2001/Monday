@@ -4,6 +4,7 @@ import {
 	IApplicationSearchInput,
 	IApplicationStatistics,
 } from "../../interface/application.interface";
+import { IDataWithPagination } from "../../interface/pagination.interface";
 import privateClient from "../client/private.client";
 
 interface IApplicationDetailParams {
@@ -20,20 +21,29 @@ const applicationEndpoint = {
 const applicationApi = {
 	getListApplication: async (
 		params?: IApplicationSearchInput
-	): Promise<IApplication[]> => {
+	): Promise<IDataWithPagination<IApplication>> => {
 		const response = await privateClient.get<IApplication[]>(
 			applicationEndpoint.getListApplication,
 			{
 				params: {
-					"applicationStatus.equals": params?.status,
+					"applicationStatus.in": params?.status,
 					"loanType.equals": params?.loanType,
 					"id.equals": params?.applicationId,
 					"dateOfApplication.greaterThanOrEqual": params?.dateRange && params?.dateRange[0],
 					"dateOfApplication.lessThanOrEqual": params?.dateRange && params?.dateRange[1],
+					"page": params?.page || 0,
+					"size": params?.size || 20,
+					"sort": ["lastModifiedDate,desc"]
 				},
 			}
 		);
-		return response.data;
+
+		const totalDocument = response.headers && response.headers['x-total-count'] ? +response.headers['x-total-count'] : 0;
+
+		return {
+			data: response.data,
+			totalDocument
+		}
 	},
 
 	getDetailApplication: async (
@@ -45,15 +55,31 @@ const applicationApi = {
 		return response.data;
 	},
 
-	getStatistics: async (): Promise<IApplicationStatistics> => {
+	getStatistics: async ( params?: IApplicationSearchInput): Promise<IApplicationStatistics> => {
 		const response = await privateClient.get<IApplicationStatistics>(
-			applicationEndpoint.statistics
+			applicationEndpoint.statistics,
+			{
+				params: {
+					startDate: params?.dateRange && params?.dateRange[0],
+					endDate: params?.dateRange && params?.dateRange[1],
+				}
+			}
 		);
 		return response.data;
 	},
-	getDiligence: async (): Promise<any> => {
+
+	getDiligence: async (params: {
+		applicationId: number,
+		checkType: string,
+	}): Promise<any> => {
 		const response = await privateClient.get<any>(
 			applicationEndpoint.diligence,
+			{
+				params: {
+					"applicationId": params?.applicationId,
+					"checkType": params?.checkType,
+				},
+			}
 		);
 		return response.data;
 	},

@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import { IApplicationDetail } from "../interface/application.interface";
+import { IApplicationDetail, IRepaymentSchedule } from "../interface/application.interface";
 import { IOption } from "../interface/general.interface";
 
 interface ApplicationContextProps {
@@ -8,7 +8,12 @@ interface ApplicationContextProps {
 		listPhoneNumber: IOption<string>[];
 		listNationalities: IOption<string>[];
 		listLoanType: IOption<string>[];
+		listInterestCalculationMethod: IOption<string>[];
+		listPaymentType: IOption<string>[];
+		listInstallmentFrequency: IOption<string>[];
+		listLoanInterestFrequency: IOption<string>[];
 	};
+	fetchApplicationDetail: () => Promise<void>;
 }
 
 const ApplicationContext = createContext<ApplicationContextProps | undefined>(

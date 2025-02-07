@@ -1,20 +1,16 @@
-import { MenuOutlined } from "@ant-design/icons";
-import { Layout, Menu, MenuProps, theme, Typography } from "antd";
-import { useState } from "react";
+import { Layout, Menu, MenuProps } from "antd";
+import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import menuConfigs from "../../configs/menu.config";
 import sizeConfigs from "../../configs/sizeConfigs";
+import useSidebarCollapse from "../../hooks/useSidebarCollapse";
 import Header from "../header/Header";
 import "./applayout.scss";
-import { useAppSelector } from "../../hooks/useAppSelector";
 
 const { Content, Sider } = Layout;
-const { Text } = Typography;
-
 
 const AppLayout = () => {
-	const [collapsed, setCollapsed] = useState(false);
-
+	const [collapsed, setCollapsed] = useSidebarCollapse();
 	const location = useLocation();
 	const navigate = useNavigate();
 

@@ -21,10 +21,9 @@ privateClient.interceptors.request.use(async (config: AxiosRequestConfig) => {
 		...config,
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${
-				getSessionStorage(`${KEY_SESSION_STORAGE.SESSION_DATA_PREFIX}${CLIENT_ID}`)
-					?.access_token
-			}`,
+			Authorization: `Bearer ${getSessionStorage(`${KEY_SESSION_STORAGE.SESSION_DATA_PREFIX}${CLIENT_ID}`)
+				?.access_token
+				}`,
 		} as AxiosRequestHeaders,
 	};
 });

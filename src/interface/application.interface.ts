@@ -1,5 +1,6 @@
 import { tApplicationStatus, tLoanType } from "../types/common.type";
 import { IBorrower } from "./borrower.interface";
+import { ILoanOffer } from "./loanOffer.interface";
 
 export interface IApplication {
 	id: number;
@@ -40,9 +41,11 @@ export interface IApplication {
 export interface IApplicationSearchInput {
 	applicationId?: string;
 	borrowerName?: string;
-	status?: string;
+	status?: any;
 	loanType?: string;
 	dateRange?: string[];
+	page?: number;
+	size?: number;
 }
 
 export interface IApplicationDetail {
@@ -79,6 +82,7 @@ export interface IApplicationDetail {
 	frdAppId: string;
 	source: string;
 	borrower: IBorrower;
+	loanOffer: ILoanOffer;
 }
 
 export interface IStatusApplication {
@@ -99,26 +103,20 @@ export interface IApplicationStatistics {
 	unsecured: IStatusApplication;
 	secured: IStatusApplication;
 }
+export interface IDueDiligence {
+	id: number;
+	checkType: string;
+	status: string;
+	mlcbData: {
+		
+	}
+}
 
-export interface ILoanOffer {
-	loanType: tLoanType;
-	loanPurpose: string;
-	applicationDate: string;
-	loanAmountOffer: number;
-	loanTenorOffer: number;
-	installments: number;
-	installmentFrequency: string;
-	installmentDate: string;
-	book: string
-	paymentType: string;
-	cbsScore: number;
-	cbsPd: number;
-	remarks: string;
-	monthlyInterestRate: number;
-	interestFrequency: string;
-	interestCalculationMethod: string;
-	adminFeePercentage : number;
-	adminFee : number;
-	lateFee: number;
-	lateFeePercentage: number;
+export interface IRepaymentSchedule {
+	id: number;
+	principalAmount: number;
+	interestAmount: number;
+	totalAmount: number;
+	repaymentDate: string;
+	loanOffer: ILoanOffer;
 }
