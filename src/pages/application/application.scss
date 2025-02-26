@@ -15,3 +15,17 @@
 		color: #25b474 !important;
 	}
 }
+
+.application-step {
+	.ant-steps-icon svg {
+		width: 35px;
+		height: 35px;
+	}
+
+	.ant-steps-item-tail::after {
+		height: 2px;
+		background-color: #cfd6dc !important;
+		margin-left: 5px;
+		width: calc(100% - 5px);
+	}
+}

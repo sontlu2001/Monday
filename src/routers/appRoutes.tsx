@@ -12,6 +12,13 @@ import CreateBorrower from "../pages/borrower/CreateBorrower";
 import { RouteType } from "./config";
 import { BorrowerProvider } from "../context/BorrowerDetailContext";
 import ApplicationDetail from "../pages/application/ApplicationDetail";
+import UserPage from "../pages/userManagement/user/UserPage";
+import UserPageLayOut from "../pages/userManagement/UserPageLayOut";
+import RolesPage from "../pages/userManagement/roles/RolesPage";
+import LoanPageLayout from "../pages/loan/LoanPageLayout";
+import LoanDetail from "../pages/loan/loanDetail/LoanDetail";
+import LoanDashboard from "../pages/loan/loanDasboard/LoanDashboard";
+import { Navigate } from "react-router-dom";
 
 const appRoutes: RouteType[] = [
     {
@@ -80,6 +87,50 @@ const appRoutes: RouteType[] = [
                     displayText: "Assigned Applications",
                     icon: <AssignmentTurnedInOutlinedIcon fontSize="small" />,
                 },
+            },
+        ],
+    },
+    {
+        path: "/user",
+        element: <UserPageLayOut />,
+        state: "user",
+        child: [
+            {
+                index: true,
+                element: <UserPage />,
+                state: "user.list",
+            },
+            {
+                path:"/user/list",
+                element: <UserPage />,
+                state: "user.list",
+            },
+            {
+                path: "/user/roles",
+                element: <RolesPage />,
+                state: "user.roles",
+            },
+        ],
+    },
+    {
+        path: "/loan",
+        element: <LoanPageLayout />,
+        state: "loan",
+        child: [
+            {
+                index: true,
+                element: <Navigate to={'/loan/dashboard'} replace ></Navigate>,
+                state: "loan.dashboard",
+            },
+            {
+                path:"/loan/dashboard",
+                element: <LoanDashboard />,
+                state: "loan.dashboard",
+            },
+            {
+                path: "/loan/detail/:slug",
+                element: <LoanDetail />,
+                state: "loan.detail",
             },
         ],
     },

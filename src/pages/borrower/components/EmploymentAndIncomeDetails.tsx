@@ -6,9 +6,10 @@ import { useBorrowerDetailContext } from "../../../context/BorrowerDetailContext
 import { calculateAverage, calcYearlyAverage, calcYearlyIncome, getCurrencyCode } from "../../../utils/utils";
 import SelectInputField from "../../../components/form/SelectInputField";
 import { TextInputField } from "../../../components/form/TextInputField";
+import { countries } from "../constants/borrower.constant";
 
 export default function EmploymentAndIncomeDetails() {
-	const { control, setValue, getValues } = useFormContext();
+	const { control, setValue } = useFormContext();
 	const [currencyCode, setCurrencyCode] = useState<string>("");
 
 	const { configOptions } = useBorrowerDetailContext();
@@ -42,6 +43,11 @@ export default function EmploymentAndIncomeDetails() {
 		name: "nationality",
 	});
 
+	const countryAddress = useWatch({
+    control,
+    name: "countryAddress",
+  });
+
 	useEffect(() => {
 		if (month1Income || month2Income || month3Income) {
 			const grossMonthlyIncome = calculateAverage([month1Income, month2Income, month3Income]);
@@ -67,6 +73,7 @@ export default function EmploymentAndIncomeDetails() {
 				options={configOptions.listEmploymentStatus}
 				label="Employment Status"
 				placeholder="Select Employment Status"
+				required={countryAddress === countries.SINGAPORE}
 			/>
 			<TextInputField
 				control={control}

@@ -5,7 +5,7 @@ export interface IBorrower {
   id: number;
   idNo: string;
   idType: string;
-	idExpiryDate: dayjs.Dayjs | null;
+  idExpiryDate: dayjs.Dayjs | null;
   fullName: string;
   handPhone: string;
   phoneCode: string;
@@ -23,44 +23,62 @@ export interface IBorrower {
   borrowerStatus?: string;
   blacklisted: string;
   borrowerId?: number;
-	source?: string,
-	currency: string,
-	dnbResultId?: number,
-	yearOfNoa?: string,
-	amountOfNoa?: number,
-	month1Income: number,
-	month2Income: number,
-	month3Income: number,
-	fridBorrowerId?: string,
+  source?: string,
+  currency: string,
+  dnbResultId?: number,
+  yearOfNoa?: string,
+  amountOfNoa?: number,
+  month1Income: number,
+  month2Income: number,
+  month3Income: number,
+  fridBorrowerId?: string,
   lastTimeDnbCheck: string;
   countryName?: string;
   specialisation?: string;
-	past3MonthsIncome?: number;
-	annualIncome?: number,
+  past3MonthsIncome?: number;
+  annualIncome?: number,
   countryAddress?: string;
   blk?: string;
   street?: string;
   unit?: string;
   building?: string;
-  employmentStatus?: string;
+  employeeStatus?: string;
   currentEmployerName?: string;
   position?: string;
   incomeDocType?: string;
 }
 
 export interface IBorrowerSummary {
-	total_outstanding: number;
-	total_overdue: number;
-	days_past_due: number;
+  total_outstanding: number;
+  total_overdue: number;
+  days_past_due: number;
 }
 
 export interface ILoan {
-	loan_id: number;
-	application_id: number;
-	disbursement_date: string;
-	loan_amount: number;
-	outstanding_amount: number;
-	loan_status: string;
+  // loan_id: number;
+  // application_id: number;
+  // disbursement_date: string;
+  // loan_amount: number;
+  // outstanding_amount: number;
+  // loan_status: string;
+  key: string;
+  loanId: string;
+  applicationId: string;
+  disbursementDate: string;
+  loanAmount: string;
+  outstandingAmount: string;
+  status: string;
+}
+
+export interface ILoanSearchInput {
+  borrowerId?: string;
+  status?: string;
+  fromDate?: string;
+  toDate?: string;
+  loanStatus?: string;
+  loanId?: string;
+  page?: number;
+  size?: number;
 }
 
 export interface IBorrowerDetail {
@@ -105,19 +123,18 @@ export interface IBorrowerDetail {
   street: string;
   unit: string;
   building: string;
-  employmentStatus: string;
+  employeeStatus: string;
   currEmployer: string;
   position: string;
   incomeDocType: string;
-  employeeStatus: string;
 }
 
 
 export interface IConfig {
   id?: number,
-	key: number;
-	code: string;
-	name: string;
+  key: number;
+  code: string;
+  name: string;
 }
 
 export const INIT_BORROWER_DETAIL: IBorrowerDetail = {
@@ -162,11 +179,10 @@ export const INIT_BORROWER_DETAIL: IBorrowerDetail = {
   street: '',
   unit: '',
   building: '',
-  employmentStatus: '',
+  employeeStatus: '',
   currEmployer: '',
   position: '',
   incomeDocType: '',
-  employeeStatus: '',
 }
 
 

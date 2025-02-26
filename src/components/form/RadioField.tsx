@@ -1,40 +1,43 @@
-import { Form, Radio, RadioGroupProps } from "antd";
-import { Key } from "react";
-import { Controller } from "react-hook-form";
-import { IOption } from "../../interface/general.interface";
+import { Form, FormItemProps, Radio, RadioGroupProps } from "antd";
+import { ReactNode } from "react";
+import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
-interface IRadioFieldProps<TFormValues, TValue extends Key>
-	extends Omit<RadioGroupProps, "name" | "control"> {
-	control: any;
-	name: keyof TFormValues;
-	options: IOption<TValue>[];
+interface IRadioFieldProps<TFormValues extends FieldValues>
+	extends RadioGroupProps {
+	control: Control<TFormValues>;
+	name: Path<TFormValues>;
+	label: ReactNode;
+	required?: boolean;
+	layout?: FormItemProps["layout"];
 }
 
-export const RadioField = <
-	TFormValues extends Record<string, any>,
-	TValue extends Key
->({
+export const RadioField = <TFormValues extends FieldValues>({
 	control,
 	name,
 	options,
+	label,
+	layout = "vertical",
+	required = false,
 	...props
-}: IRadioFieldProps<TFormValues, TValue>) => (
+}: IRadioFieldProps<TFormValues>) => (
 	<Controller
-		name={name as string}
+		name={name}
 		control={control}
 		render={({ field: { onChange, value }, fieldState: { error } }) => (
 			<Form.Item
 				validateStatus={error ? "error" : ""}
 				help={error ? error.message : ""}
-				{...props}
+				layout={layout}
+				required={required}
+				label={label}
+
 			>
-				<Radio.Group onChange={onChange} value={value}>
-					{options.map((option) => (
-						<Radio key={option.value.toString()} value={option.value}>
-							{option.label}
-						</Radio>
-					))}
-				</Radio.Group>
+				<Radio.Group
+					onChange={onChange}
+					value={value}
+					options={options}
+					{...props}
+				/>
 			</Form.Item>
 		)}
 	/>

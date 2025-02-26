@@ -5,6 +5,8 @@ import {
 	IBorrower,
 	IBorrowerDetail,
 	IConfig,
+	ILoan,
+	ILoanSearchInput,
 } from "../../interface/borrower.interface";
 import { tApplicationSearchType } from "../../types/common.type";
 import privateClient from "../client/private.client";
@@ -42,7 +44,7 @@ interface IBorrowerConfigParams {
 const borrowerEndpoint = {
 	detail: (borrowerId: string) => `api/borrowers/${borrowerId}`,
 	getConfig: `api/master-data`,
-	updateBorrowers: (id: number) =>  `api/borrowers/${id}`,
+	updateBorrowers: (id: number) => `api/borrowers/${id}`,
 	create: (borrower: IBorrower) => `/api/borrowers`,
 	searchBorrowers: '/api/borrowers',
 	getApplications: '/api/applications',
@@ -91,7 +93,7 @@ const borrowerApi = {
 		return response.data;
 	},
 
-	searchBorrower: async(idNo: string, searchMode: tApplicationSearchType): Promise<IBorrower[]> => {
+	searchBorrower: async (idNo: string, searchMode: tApplicationSearchType): Promise<IBorrower[]> => {
 		const response = await privateClient.get<IBorrower[]>(
 			borrowerEndpoint.searchBorrowers,
 			{
@@ -103,7 +105,7 @@ const borrowerApi = {
 		return response.data;
 	},
 
-	getApplications: async(borrowerId: string): Promise<IApplication[]> => {
+	getApplications: async (borrowerId: string): Promise<IApplication[]> => {
 		const response = await privateClient.get<IApplication[]>(
 			borrowerEndpoint.getApplications,
 			{
@@ -112,6 +114,25 @@ const borrowerApi = {
 				},
 			}
 		);
+		return response.data;
+	},
+
+	getLoans: async (params?: ILoanSearchInput): Promise<ILoan[]> => {
+		const response = await privateClient.get<ILoan[]>(
+			borrowerEndpoint.getListOfLoans,
+			{
+				params: {
+					"borrowerId.equals": params?.borrowerId,
+					// from_date: '',
+					// to_date: '',
+					// loan_status: '',
+					// loan_id: 0,
+					page: params?.page || 0,
+					size: params?.size || 20,
+					// sort: ["lastModifiedDate,desc"],
+				},
+			}
+		)
 		return response.data;
 	}
 };

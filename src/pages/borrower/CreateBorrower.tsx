@@ -15,6 +15,10 @@ import { MESSAGE_BORROWER } from "./constants/borrower.constant";
 import { createBorrowerSchema } from "./validate/borrowerValidationSchema";
 import { formatDate, getCurrencyCode } from "../../utils/utils";
 
+import "./CreateBorrower.scss";
+import { useBorrowerDetailContext } from "../../context/BorrowerDetailContext";
+import SkeletonLoading from "../../components/common/SkeletonLoading";
+
 dayjs.extend(customParseFormat);
 
 const CreateBorrower = () => {
@@ -26,8 +30,8 @@ const CreateBorrower = () => {
 			idExpiryDate: undefined,
 			fullName: "",
 			handPhone: "",
-			phoneCode: "",
-			nationality: undefined,
+			phoneCode: "SGP",
+			nationality: "SGD_SGP",
 			email: "",
 			gender: undefined,
 			dob: undefined,
@@ -48,6 +52,9 @@ const CreateBorrower = () => {
 			source: APPLICATION_TYPE.MONDAY,
 		},
 	});
+
+	const {loading} = useBorrowerDetailContext()
+
 	const navigation = useNavigate();
 
 	const onCreateBorrower: SubmitHandler<IBorrower> = async (
@@ -85,16 +92,18 @@ const CreateBorrower = () => {
 		}
 	};
 
+	if(loading) return <SkeletonLoading/>
+
 	return (
 		<>
-			<section className="p-4">
+			<section>
 				<Breadcrumb
 					items={[
 						{ title: "Home" },
-						{ title: "Borrower Management" },
+						{ title: "Borrower Management", onClick: () => navigation("/borrower") },
 						{ title: "Create Borrower" },
 					]}
-					className="mb-4"
+					className="create-borrower__breadcrum mb-4"
 				/>
 				<div className="flex items-center mb-2">
 					<Typography.Title className="!mb-0" level={3}>

@@ -12,6 +12,7 @@ interface ApplicationContextProps {
 		listPaymentType: IOption<string>[];
 		listInstallmentFrequency: IOption<string>[];
 		listLoanInterestFrequency: IOption<string>[];
+		listIdType:IOption<string>[];
 	};
 	fetchApplicationDetail: () => Promise<void>;
 }

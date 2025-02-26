@@ -9,7 +9,7 @@ import EmploymentAndIncomeDetails from "./EmploymentAndIncomeDetails";
 
 const BorrowerDetailsTabContent = () => {
 
-	const { isEditMode } = useBorrowerDetailContext();
+	const { isEditMode, listLoans } = useBorrowerDetailContext();
 	return (
 		<div>
 			{isEditMode && (
@@ -25,7 +25,7 @@ const BorrowerDetailsTabContent = () => {
 					<BorrowerDetailSaveMode />
 				</>
 			)}
-			<TableLoan />
+			<TableLoan data={listLoans} />
 			<TableRecentApplication />
 		</div>
 	);

@@ -4,7 +4,6 @@ import { calcAdminFee, formatCurrency, formatDate, getFutureDate, getMasterDataN
 import { useFormContext, useWatch } from "react-hook-form";
 import { useApplicationDetailContext } from "../../../../context/ApplicationDetailContext";
 import { useCallback, useEffect } from "react";
-import DatePickerField from "../../../../components/form/DatePickerField";
 import { ILoanOffer } from "../../../../interface/loanOffer.interface";
 
 
@@ -29,7 +28,7 @@ const LoanOfferViewMode = () => {
 			<InfoDisplay value={MAP_LOAN_TYPE_NAME.get(applicationDetail?.loanType)} label="Loan Type:" />
 			<InfoDisplay value={applicationDetail?.loanPurpose} label="Loan Purpose:" />
 			<InfoDisplay value={formatDate(applicationDetail?.dateOfApplication, "DD/MM/YYYY")} label="Application Date:" />
-			<InfoDisplay value={`${applicationDetail?.borrower.currency} ${formatCurrency(applicationDetail?.loanOffer?.loanAmountOffer || 0)}`} label="Loan Amount Offer:" />
+			<InfoDisplay value={`SGD ${formatCurrency(applicationDetail?.loanOffer?.loanAmountOffer || 0)}`} label="Loan Amount Offer:" />
 			<div className="col-span-2">
 				<InfoDisplay value={`${applicationDetail?.tenorMonths} Months`} label="Loan Tenor Offer:" />
 			</div>
@@ -40,7 +39,7 @@ const LoanOfferViewMode = () => {
 				} 
 				label="Installment Frequency:" 
 			/>
-			<InfoDisplay value={formatDate(firstPayDate, 'DD/MM/YYYY')} label="1st Installment Date:" />
+			<InfoDisplay value={formatDate(applicationDetail.loanOffer?.firstPayDate, 'DD/MM/YYYY')} label="1st Installment Date:" />
 			<InfoDisplay value={applicationDetail?.loanOffer?.book1} label="Book 1:" />
 			<div className="col-span-2">
 				<InfoDisplay 
@@ -73,10 +72,10 @@ const LoanOfferViewMode = () => {
 				<p className="font-bold">Fees</p>
 			</div>
 			<InfoDisplay value={applicationDetail?.loanOffer?.adminFeeRate || 0} label="Admin Fee (%)" />
-			<InfoDisplay value={calcAdminFee(applicationDetail?.loanOffer?.loanAmountOffer, applicationDetail?.loanOffer?.adminFeeRate, applicationDetail?.borrower?.currency)} label="Admin Fee :" />
+			<InfoDisplay value={calcAdminFee(applicationDetail?.loanOffer?.loanAmountOffer, applicationDetail?.loanOffer?.adminFeeRate, "SGD")} label="Admin Fee :" />
 			<div></div>
 			<InfoDisplay value={applicationDetail?.loanOffer?.lateInterest || 0} label="Late Interest (%)" />
-			<InfoDisplay value={`${applicationDetail?.borrower.currency} ${formatCurrency(applicationDetail?.loanOffer?.lateFee || 0)}`} label="Late Fee :" />
+			<InfoDisplay value={`SGD ${formatCurrency(applicationDetail?.loanOffer?.lateFee || 0)}`} label="Late Fee :" />
 		</div>
 	)
 

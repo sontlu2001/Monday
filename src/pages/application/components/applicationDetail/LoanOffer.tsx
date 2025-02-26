@@ -12,26 +12,30 @@ import ApplicationModalLayout from "../modal/ApplicationModalLayout";
 import RepaymentSchedule from "./RepaymentSchedule";
 import loanOfferApi from "../../../../api/module/loanOffer.api";
 import LoanOfferHistory from "./LoanOfferHistory";
-import { ILoanOffer, INITIAL_LOAN_OFFER } from "../../../../interface/loanOffer.interface";
+import { ILoanOffer, ILoanOfferRes, INITIAL_LOAN_OFFER } from "../../../../interface/loanOffer.interface";
+import { formatDate } from "../../../../utils/utils";
+import { INIT_LOAN_OFFER_REPAYMENT_SCHEDULES } from "../../constant/loanOffer.constant";
 
 const LoanOffer = ({
 	isRequestNewOffer,
 	setIsRequestNewOffer,
-}:{
+}: {
 	isRequestNewOffer: boolean;
-	setIsRequestNewOffer:  React.Dispatch<React.SetStateAction<boolean>>;
+	setIsRequestNewOffer: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
 	const [isSaveLoanOffer, setSaveLoanOffer] = useState(false);
 	const [isShowModal, setShowModal] = useState(false);
-	const {applicationDetail, fetchApplicationDetail} = useApplicationDetailContext();
+	const { applicationDetail, fetchApplicationDetail } = useApplicationDetailContext();
 	const [loanOfferHistories, setLoanOfferHistories] = useState<ILoanOffer[]>([]);
 	const [loanOfferDetail, setLoanOfferDetail] = useState<ILoanOffer>(INITIAL_LOAN_OFFER);
+	const [loanOfferRepaymentSchedules, setLoanOfferRepaymentSchedules] = useState<ILoanOfferRes[]>([]);
 
 	const columns = [
 		{
 			title: 'Time',
 			dataIndex: 'createdDate',
 			key: 'createdDate',
+			render: (createdDate: string) => formatDate(createdDate, 'DD/MM/YYYY HH:mm:ss'),
 		},
 		{
 			title: 'Create By',
@@ -42,25 +46,42 @@ const LoanOffer = ({
 
 	const methods = useForm<ILoanOffer>({});
 
-	const fetchLoanOfferDetail = async() => {
+	const fetchLoanOfferDetail = async () => {
 		try {
 			const response = await loanOfferApi.getDetailLoanOffer(applicationDetail.loanOffer.id.toString());
 			if (!response) {
-        toast.error(TOAST_MESSAGE.ERROR);
-        return;
-      }
+				toast.error(TOAST_MESSAGE.ERROR);
+				return;
+			}
+
 			methods.reset(response);
+		} catch (error) {
+		}
+	};
+
+	const fetchLoanOfferRepaymentSchedule = async () => {
+		try {
+			const response = await loanOfferApi.getRepaymentSchedules({
+				loanOfferId: applicationDetail.loanOffer.id,
+				sort: 'date,asc',
+			});
+			if (!response) {
+				toast.error(TOAST_MESSAGE.ERROR);
+				return;
+			}
 		} catch (error) {
 		}
 	};
 
 	useEffect(() => {
 		fetchLoanOfferDetail();
+		fetchLoanOfferRepaymentSchedule();
 	}, []);
 
 	const handleEditLoanOffer = async () => {
 		try {
 			const loanOfferData = methods.getValues();
+
 			const response = await loanOfferApi.updateLoanOffer(loanOfferData);
 			if (!response) {
 				toast.error(TOAST_MESSAGE.ERROR);
@@ -86,32 +107,44 @@ const LoanOffer = ({
 		}
 	};
 
+	const handleCancelNewOrder = async () => {
+		try {
+			const response = await loanOfferApi.cancelLoanOffer(applicationDetail.loanOffer.id.toString());
+			if (!response) {
+				toast.error(TOAST_MESSAGE.ERROR);
+				return;
+			}
+			await fetchApplicationDetail();
+			setIsRequestNewOffer(false);
+			toast.success(TOAST_MESSAGE.SUCCESS);
+		} catch (error) {
+		}
+	};
+
+	const isSaveMode = isRequestNewOffer && !isSaveLoanOffer && applicationDetail.applicationStatus !== APPLICATION_STATUS.EDIT_PENDING;
+
 	return (
 		<FormProvider {...methods}>
 			<ApplicationCard
 				title={
 					<span className="font-medium">
 						Loan Offer
-						<button className="ml-2"><HistoryOutlined className="" onClick={viewLoanOfferHistory}/></button>
+						<button className="ml-2"><HistoryOutlined className="" onClick={viewLoanOfferHistory} /></button>
 					</span>
 				}
 				extraContent={
-					isRequestNewOffer && !isSaveLoanOffer ? (
+					isSaveMode ? (
 						<Space>
-							<Button color="blue" variant="outlined" onClick={()=> setIsRequestNewOffer(false)}>Cancel</Button>
+							<Button color="blue" variant="outlined" onClick={() => setIsRequestNewOffer(false)}>Cancel</Button>
 							<Button type="primary" onClick={handleEditLoanOffer}>Submit</Button>
 						</Space>
 					) : (
-						isSaveLoanOffer || applicationDetail.applicationStatus === APPLICATION_STATUS.EDIT_PENDING? (
+						isSaveLoanOffer || applicationDetail.applicationStatus === APPLICATION_STATUS.EDIT_PENDING ? (
 							<div className="flex gap-2">
-								<Button type="primary" danger>Cancel new offer</Button>
-								<Button type="primary" disabled>
-									Request new offer
-								</Button>
+								<Button type="primary" danger onClick={handleCancelNewOrder}>Cancel new offer</Button>
 							</div>
 						) : (
 							<div className="flex gap-2">
-							<Button type="primary" disabled>Cancel new offer</Button>
 								<Button type="primary" onClick={() => setIsRequestNewOffer(true)}>
 									Request new offer
 								</Button>
@@ -120,11 +153,7 @@ const LoanOffer = ({
 					)
 				}
 			>
-				{isRequestNewOffer && !isSaveLoanOffer ? (
-					<LoanOfferSaveMode />
-				) : (
-					<LoanOfferViewMode/>
-				)}
+				{isSaveMode ? <LoanOfferSaveMode /> : <LoanOfferViewMode />}
 			</ApplicationCard>
 			<Modal
 				title={"Loan Offer History"}
@@ -139,11 +168,11 @@ const LoanOffer = ({
 			>
 				<ApplicationModalLayout
 					leftContent={
-						<Table className="" pagination={false} dataSource={loanOfferHistories} columns={columns} />}
+						<Table pagination={false} dataSource={loanOfferHistories} columns={columns} />}
 					infoContent={
-						<LoanOfferHistory loanOfferDetail={loanOfferDetail}  />
+						<LoanOfferHistory loanOfferDetail={loanOfferDetail} />
 					}
-					tableContent={<RepaymentSchedule />}
+					tableContent={<RepaymentSchedule listRepaymentSchedules={INIT_LOAN_OFFER_REPAYMENT_SCHEDULES} onlyViewData={false} />}
 				/>
 			</Modal>
 		</FormProvider>

@@ -1,15 +1,16 @@
 import {
 	IRepaymentSchedule,
 } from "../../interface/application.interface";
-import { ILoanOffer } from "../../interface/loanOffer.interface";
+import { ILoanOffer, ILoanOfferRes } from "../../interface/loanOffer.interface";
 import privateClient from "../client/private.client";
 
 
-const loanOffderEndpoint = {
+const loanOfferEndpoint = {
 	loanOfferDetail: (loanOfferId: string) => `api/loan-offers/${loanOfferId}`,
 	loanOfferHistory: `api/loan-offers`,
 	getRepaymentSchedule: 'api/repayment-schedules',
 	updateLoanOffer: () => `api/loan-offer/request-new`,
+	cancelLoanOffer: (loanOfferId: string) => `api/loan-offer/${loanOfferId}/request-cancel`,
 };
 
 const loanOfferApi = {
@@ -17,18 +18,18 @@ const loanOfferApi = {
 		loanOfferId: string
 	): Promise<ILoanOffer> => {
 		const response = await privateClient.get<ILoanOffer>(
-			loanOffderEndpoint.loanOfferDetail(loanOfferId)
+			loanOfferEndpoint.loanOfferDetail(loanOfferId)
 		);
 		return response.data;
 	},
 
 	getRepaymentSchedules: async (params:{
 		loanOfferId: number,
-		size: number,
-		sort: string,
+		size?: number,
+		sort?: string,
 	}): Promise<IRepaymentSchedule[]> => {
 		const response = await privateClient.get<IRepaymentSchedule[]>(
-			loanOffderEndpoint.getRepaymentSchedule,
+			loanOfferEndpoint.getRepaymentSchedule,
 			{
 				params: {
 					"loanOfferId.equals": params?.loanOfferId,
@@ -44,7 +45,7 @@ const loanOfferApi = {
 		applicationId: number | string,
 	): Promise<any> => {
 		const response = await privateClient.get<any>(
-			loanOffderEndpoint.loanOfferHistory,
+			loanOfferEndpoint.loanOfferHistory,
 			{
 				params: {
 					"applicationId.equals": applicationId,
@@ -57,13 +58,23 @@ const loanOfferApi = {
 
 	updateLoanOffer: async (
 		params: ILoanOffer
-	): Promise<any> => {
+	): Promise<ILoanOfferRes> => {
 		const response = await privateClient.post<any>(
-			loanOffderEndpoint.updateLoanOffer(),
+			loanOfferEndpoint.updateLoanOffer(),
 			params
 		);
 		return response.data;
 	},
+
+	cancelLoanOffer: async (
+		loanOfferId: string
+	): Promise<ILoanOfferRes> => {
+		const response = await privateClient.post<ILoanOfferRes>(
+			loanOfferEndpoint.cancelLoanOffer(loanOfferId)
+		);
+		return response.data;
+	},
+
 };
 
 export default loanOfferApi;

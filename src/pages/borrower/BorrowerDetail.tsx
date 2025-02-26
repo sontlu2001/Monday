@@ -69,7 +69,7 @@ const BorrowerDetail = () => {
 
 	return (
 		<>
-			<section className="p-4">
+			<section>
 				<Breadcrumb
 					items={[
 						{ title: "Home" },

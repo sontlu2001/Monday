@@ -1,4 +1,3 @@
-import { INITIAL_APPLICATION_DETAIL} from "../pages/application/constant/application.constant";
 
 export interface ILoanOffer {
 	id: number;
@@ -49,3 +48,8 @@ export const INITIAL_LOAN_OFFER: ILoanOffer = {
   createdBy: "",
   createdDate: "",
 };
+
+export interface ILoanOfferRes {
+  applicationStatus: string;
+  loanOffer: ILoanOffer;
+}

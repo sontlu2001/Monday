@@ -1,4 +1,4 @@
-import { Divider } from "antd";
+import { Card, Divider } from "antd";
 import { ReactNode } from "react";
 
 interface IApplicationCardProps {
@@ -10,14 +10,14 @@ interface IApplicationCardProps {
 const ApplicationCard = (props: IApplicationCardProps) => {
 	const { title, extraContent, children } = props;
 	return (
-		<div>
+		<Card>
 			<div className="flex justify-between items-center">
 				<div>{title}</div>
 				<div>{extraContent}</div>
 			</div>
 			<Divider className="my-2"></Divider>
 			{children && <div>{children}</div>}
-		</div>
+		</Card>
 	);
 };
 

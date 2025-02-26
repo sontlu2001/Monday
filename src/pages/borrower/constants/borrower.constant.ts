@@ -36,16 +36,13 @@ export const listGroups: IOption[] = [
   { value: 'Kannada', label: 'Kannada' },
 ]
 
-export const idTypes: IOption[] = [
-  { value: 'NRIC', label: 'NRIC' },
-  { value: 'EMPL', label: 'EMPLOYMENT PASS' },
-]
+export enum idTypes {
+  NRIC = 'NRIC',
+}
 
-export const nationalities: IOption[] = [
-  { value: 'Indian', label: 'Indian' },
-  { value: 'American', label: 'American' },
-  { value: 'Australian', label: 'Australian' },
-]
+export enum countries {
+  SINGAPORE = 'SGP',
+}
 
 export const propertyOwnerships: IOption[] = [
   { value: 'NOTOWNPP', label: 'Does not own any property' },

@@ -41,6 +41,7 @@ const AppLayout = () => {
 						onClick={onClick}
 						defaultSelectedKeys={[location.pathname]}
 						defaultOpenKeys={[openKeyMenuSideBar ? openKeyMenuSideBar?.key : ""]}
+						selectedKeys={[location.pathname]}
 						mode="inline"
 						theme="light"
 						style={{ borderRight: 0 }}

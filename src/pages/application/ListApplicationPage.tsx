@@ -1,4 +1,4 @@
-import { Collapse, CollapseProps, Table, TableProps } from "antd";
+import { Card, Table, TableProps } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -13,12 +13,13 @@ import {
 	IApplicationSearchInput,
 	IApplicationStatistics,
 } from "../../interface/application.interface";
+import { ITablePaginationConfig } from "../../interface/pagination.interface";
 import { formatDate } from "../../utils/utils";
+import './application.scss';
 import ApplicationBrief from "./components/ApplicationBrief";
 import ApplicationSearch from "./components/ApplicationSearch";
 import ApplicationTag from "./components/ApplicationTag";
-import './application.scss'
-import { ITablePaginationConfig } from "../../interface/pagination.interface";
+import { INITIAL_STATISTICS } from "./constant/application.constant";
 
 const ListApplication = () => {
 	const navigate = useNavigate();
@@ -26,28 +27,13 @@ const ListApplication = () => {
 	const [dataTable, setDataTable] = useState<IApplication[]>([]);
 	const [paginationConfig, setPaginationConfig] = useState<ITablePaginationConfig>({
 		current: 0,
-		pageSize: 20,
+		pageSize: 10,
 		total: 0
 	})
 	const [loadingPage, setLoadingPage] = useState(true);
 
 	const [isSearching, setSearching] = useState(false);
-	const [statistics, setStatistics] = useState<IApplicationStatistics>({
-		totalApplication: 0,
-		pending: 0,
-		underReview: 0,
-		approved: 0,
-		rejected: 0,
-		secured: 0,
-		unsecured: 0,
-		disbursed: 0,
-		disbursementApproved: 0,
-		disbursementCancel: 0,
-		disbursementReturn: 0,
-		disbursementUnderReview: 0,
-		offerApproved: 0,
-		offerPending: 0,
-	});
+	const [statistics, setStatistics] = useState<IApplicationStatistics>(INITIAL_STATISTICS);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -64,7 +50,7 @@ const ListApplication = () => {
 			if (!response) throw new Error(TOAST_MESSAGE.ERROR);
 			setStatistics(response);
 		} catch (error) {
-			toast.error(TOAST_MESSAGE.ERROR);
+			console.log(error);
 		}
 	};
 
@@ -80,7 +66,7 @@ const ListApplication = () => {
 			setDataTable(response.data);
 			setPaginationConfig({ ...paginationConfig, total: response.totalDocument })
 		} catch (error) {
-			toast.error(TOAST_MESSAGE.ERROR);
+			console.log(error);
 		} finally {
 			setSearching(false);
 		}
@@ -185,50 +171,42 @@ const ListApplication = () => {
 			title: "Last Updated",
 			dataIndex: "lastModifiedDate",
 			key: "lastModifiedDate",
-			render: (type: string, record) => formatDate(record.dateOfApplication, 'DD/MM/YYYY')
-		},
-	];
-
-	const collapseItem: CollapseProps["items"] = [
-		{
-			key: "1",
-			label: <span className="font-semibold">Application ({paginationConfig?.total})</span>,
-			children: (
-				<Table<IApplication>
-					columns={columns}
-					rowKey={(record) => record.id}
-					dataSource={dataTable}
-					pagination={{
-						pageSize: paginationConfig?.pageSize ? paginationConfig?.pageSize : 20,
-						current: paginationConfig?.current ? paginationConfig?.current + 1 : 1,
-						total: paginationConfig?.total ? paginationConfig?.total : 0,
-						pageSizeOptions: [20, 50, 100],
-						showSizeChanger: true
-					}}
-					scroll={{ x: 240 }}
-					size="small"
-					onChange={handleTableChange}
-				/>
-			),
+			render: (type: string, record) => formatDate(record.lastModifiedDate, "DD/MM/YYYY"),
 		},
 	];
 
 	if (loadingPage) return <SkeletonLoading />;
 
 	return (
-		<div className="section">
+		<section>
 			<ApplicationBrief {...statistics} />
 			<ApplicationSearch
 				isSearchingData={isSearching}
 				eventResetForm={onResetFormSearch}
 				eventSearch={onSearchApplication}
 			/>
-			<Collapse
-				items={collapseItem}
-				defaultActiveKey={["1"]}
-				expandIconPosition="end"
-			/>
-		</div>
+			<Card
+				className="border rounded-md bg-white shadow-sm"
+				title={<span className="text-base">Application ({paginationConfig?.total})</span>}
+			>
+				<Table<IApplication>
+					size="small"
+					rowKey={(record) => record.id}
+					loading={isSearching}
+					columns={columns}
+					dataSource={dataTable}
+					onChange={handleTableChange}
+					pagination={{
+						pageSize: paginationConfig?.pageSize ? paginationConfig?.pageSize : 20,
+						current: paginationConfig?.current ? paginationConfig?.current + 1 : 1,
+						total: paginationConfig?.total ? paginationConfig?.total : 0,
+						pageSizeOptions: [20, 50, 100],
+						showSizeChanger: true,
+					}}
+					scroll={{ x: 240 }}
+				/>
+			</Card>
+		</section>
 	);
 };
 
