@@ -1,0 +1,19 @@
+.document-modal {
+	.ant-modal-content {
+		padding: 0;
+	}
+
+	.ant-modal-confirm-paragraph {
+		max-width: unset;
+	}
+}
+
+.disbursement-card {
+	.ant-card-head {
+		text-align: left;
+	}
+
+	.ant-card-body {
+		text-align: right;
+	}
+}

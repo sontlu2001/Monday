@@ -1,0 +1,10 @@
+.create-borrower__breadcrum {
+	li:first-child,
+	li:last-child {
+		cursor: default;
+	}
+
+	li {
+		cursor: pointer;
+	}
+}

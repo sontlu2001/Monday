@@ -20,7 +20,7 @@ loanOfferDetail
 			<InfoDisplay value={MAP_LOAN_TYPE_NAME.get(applicationDetail?.loanType)} label="Loan Type:" />
 			<InfoDisplay value={applicationDetail?.loanPurpose} label="Loan Purpose:" />
 			<InfoDisplay value={formatDate(applicationDetail?.dateOfApplication, "DD/MM/YYYY")} label="Application Date:" />
-			<InfoDisplay value={`${applicationDetail?.borrower.currency} ${formatCurrency(loanOfferDetail?.loanAmountOffer || 0)}`} label="Loan Amount Offer:" />
+			<InfoDisplay value={`SGD ${formatCurrency(loanOfferDetail?.loanAmountOffer || 0)}`} label="Loan Amount Offer:" />
 			<div className="col-span-2">
 				<InfoDisplay value={`${applicationDetail?.tenorMonths} Months`} label="Loan Tenor Offer:" />
 			</div>
@@ -33,16 +33,12 @@ loanOfferDetail
 			/>
       <InfoDisplay value={formatDate(loanOfferDetail?.firstPayDate, 'DD/MM/YYYY')} label="1st Installment Date:" />
 			<InfoDisplay value={loanOfferDetail?.book1} label="Book 1:" />
-			<div className="col-span-2">
-				<InfoDisplay 
-					value={
-						getMasterDataName(configOptions.listPaymentType, loanOfferDetail?.paymentType)
-					} 
-					label="Payment Type:"
-				/>
-			</div>
-			<InfoDisplay value={""} label="CBS score:" />
-			<InfoDisplay value={""} label="CBS PD:" />
+			<InfoDisplay 
+				value={
+					getMasterDataName(configOptions.listPaymentType, loanOfferDetail?.paymentType)
+				} 
+				label="Payment Type:"
+			/>
 			<InfoDisplay value={applicationDetail?.remarks} label="Remarks:" />
 			<div className="col-span-full">
 				<p className="font-bold">Interest</p>
@@ -64,10 +60,10 @@ loanOfferDetail
 				<p className="font-bold">Fees</p>
 			</div>
 			<InfoDisplay value={loanOfferDetail?.adminFeeRate || 0} label="Admin Fee (%)" />
-			<InfoDisplay value={calcAdminFee(loanOfferDetail?.loanAmountOffer, loanOfferDetail?.adminFeeRate, applicationDetail?.borrower?.currency)} label="Admin Fee :" />
+			<InfoDisplay value={calcAdminFee(loanOfferDetail?.loanAmountOffer, loanOfferDetail?.adminFeeRate, "SGD")} label="Admin Fee :" />
 			<div></div>
 			<InfoDisplay value={loanOfferDetail?.lateInterest || 0} label="Late Interest (%)" />
-			<InfoDisplay value={`${applicationDetail?.borrower.currency} ${formatCurrency(loanOfferDetail?.lateFee || 0)}`} label="Late Fee :" />
+			<InfoDisplay value={`SGD ${formatCurrency(loanOfferDetail?.lateFee || 0)}`} label="Late Fee :" />
 		</div>
     </div>
 		

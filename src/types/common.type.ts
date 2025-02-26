@@ -1,4 +1,5 @@
-import {  APPLICATION_PRODUCT_TYPE, APPLICATION_PRODUCT_TYPE_NAME, APPLICATION_SEARCH_TYPE, APPLICATION_STATUS, APPLICATION_STATUS_COLOR, APPLICATION_STATUS_NAME, APPLICATION_TYPE, APPLICATION_TYPE_NAME, BORROWER_STATUS, BORROWER_STATUS_NAME, KEY_LOCAL_STORAGE, KEY_SESSION_STORAGE, LOAN_TYPE, LOAN_TYPE_NAME, THEME } from "../constants/general.constant";
+import { APPLICATION_PRODUCT_TYPE, APPLICATION_PRODUCT_TYPE_NAME, APPLICATION_SEARCH_TYPE, APPLICATION_STATUS, APPLICATION_STATUS_COLOR, APPLICATION_STATUS_NAME, APPLICATION_TYPE, APPLICATION_TYPE_NAME, BORROWER_STATUS, BORROWER_STATUS_NAME, CHECK_TYPE, COMMON_CHECK_STATUS, COMMON_RESULT_SUMMARY, KEY_LOCAL_STORAGE, KEY_SESSION_STORAGE, LOAN_TYPE, LOAN_TYPE_NAME, THEME } from "../constants/general.constant";
+import { ROLE_TYPES } from "../pages/userManagement/constant/role.constant";
 
 /**
  *  This general type is mainly used to create type from constant object.
@@ -54,3 +55,9 @@ export type tApplicationStatusColor = ObjectValues<typeof APPLICATION_STATUS_COL
 export type tBorrowerStatus = ObjectValues<typeof BORROWER_STATUS>;
 export type tBorrowerStatusName = ObjectValues<typeof BORROWER_STATUS_NAME>;
 export type tApplicationSearchType = ObjectValues<typeof APPLICATION_SEARCH_TYPE>;
+
+export type tCheckType = ObjectValues<typeof CHECK_TYPE>;
+
+export type tCheckStatus = ObjectValues<typeof COMMON_CHECK_STATUS>;
+export type tResultSummary = ObjectValues<typeof COMMON_RESULT_SUMMARY>;
+export type tRoleType = ObjectValues<typeof ROLE_TYPES>;

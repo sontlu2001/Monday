@@ -8,7 +8,6 @@ const { Dragger } = Upload;
 const props: UploadProps = {
 	name: "file",
 	multiple: true,
-	action: "https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload",
 	onChange(info) {
 		const { status } = info.file;
 		if (status !== "uploading") {
@@ -25,8 +24,20 @@ const props: UploadProps = {
 	},
 };
 
-const UploadDocument: React.FC = () => (
-	<Dragger {...props}>
+type UploadDocumentProps = {
+	accept: string;
+	applicationId: number;
+}
+
+const UploadDocument: React.FC<UploadDocumentProps> = ({ accept, applicationId }) => (
+	<Dragger {...props} accept={accept} beforeUpload={(file) => {
+		const acceptMimeType = accept.includes(",") ? accept.split(",") : [accept];
+		const isValidFile = acceptMimeType.includes(file.type);
+		if (!isValidFile) {
+			message.error(`${file.name} is not allowed`);
+		}
+		return isValidFile;
+	}} action={`https://mongw-ifsdev.tdt.asia/api/applications/doc-upload?applicationId=${applicationId}`}>
 		<p className="ant-upload-drag-icon">
 			<InboxOutlined />
 		</p>

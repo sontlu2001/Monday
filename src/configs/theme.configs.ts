@@ -26,6 +26,9 @@ export const getThemeConfig: tCustomThemeConfig = {
 							Card: {
 								headerHeight: 46,
 								headerPadding: 16
+							},
+							Collapse: {
+								headerBg: '#ffffff',
 							}
 						},
 						algorithm: theme.defaultAlgorithm,

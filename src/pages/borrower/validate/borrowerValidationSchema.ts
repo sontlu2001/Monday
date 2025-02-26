@@ -2,11 +2,12 @@ import dayjs from "dayjs";
 import * as yup from "yup";
 import { IBorrower } from "../../../interface/borrower.interface";
 import { VALIDATION_MESSAGES } from "../../../constants/validation.constant";
+import { countries } from "../constants/borrower.constant";
 
 export const createBorrowerSchema = yup.object().shape({
 	idNo: yup.string().required(VALIDATION_MESSAGES.REQUIRED_FIELD),
 	idType: yup.string().required(VALIDATION_MESSAGES.REQUIRED_FIELD),
-	idExpiryDate: yup.mixed<dayjs.Dayjs>().nullable().required(VALIDATION_MESSAGES.REQUIRED_FIELD),
+	idExpiryDate: yup.mixed<dayjs.Dayjs>().nullable(),
 	fullName: yup.string().required(VALIDATION_MESSAGES.REQUIRED_FIELD),
 	nationality: yup.string().required(VALIDATION_MESSAGES.REQUIRED_FIELD),
 	phoneCode: yup.string().required(VALIDATION_MESSAGES.REQUIRED_FIELD),
@@ -16,9 +17,30 @@ export const createBorrowerSchema = yup.object().shape({
 	dob: yup.mixed<dayjs.Dayjs>().required(VALIDATION_MESSAGES.REQUIRED_FIELD),
 	ethnicGroup: yup.string().optional(),
 	address: yup.string().optional(),
-	postalCode: yup.string().optional(),
-	typeOfResidential: yup.string().optional(),
-	propertyOwnership: yup.string().optional(),
+	typeOfResidential: yup.string().when("countryAddress", (address, schema) => {
+		const addressValue = Array.isArray(address) ? address[0] : address;
+ 	 	return addressValue === countries.SINGAPORE ? schema.required(VALIDATION_MESSAGES.REQUIRED_FIELD): schema.optional();
+	}),
+	propertyOwnership: yup.string().when("countryAddress", (address, schema) => {
+		const addressValue = Array.isArray(address) ? address[0] : address;
+ 	 	return addressValue === countries.SINGAPORE ? schema.required(VALIDATION_MESSAGES.REQUIRED_FIELD): schema.optional();
+	}),
+	blk: yup.string().when("countryAddress", (address, schema) => {
+		const addressValue = Array.isArray(address) ? address[0] : address;
+ 	 	return addressValue === countries.SINGAPORE ? schema.required(VALIDATION_MESSAGES.REQUIRED_FIELD): schema.optional();
+	}),
+	street: yup.string().when("countryAddress", (address, schema) => {
+		const addressValue = Array.isArray(address) ? address[0] : address;
+ 	 	return addressValue === countries.SINGAPORE ? schema.required(VALIDATION_MESSAGES.REQUIRED_FIELD): schema.optional();
+	}),
+	postalCode: yup.string().when("countryAddress", (address, schema) => {
+		const addressValue = Array.isArray(address) ? address[0] : address;
+ 	 	return addressValue === countries.SINGAPORE ? schema.required(VALIDATION_MESSAGES.REQUIRED_FIELD): schema.optional();
+	}),
+	employeeStatus: yup.string().when("countryAddress", (address, schema) => {
+		const addressValue = Array.isArray(address) ? address[0] : address;
+ 	 	return addressValue === countries.SINGAPORE ? schema.required(VALIDATION_MESSAGES.REQUIRED_FIELD): schema.optional();
+	}),
 	month1Income: yup.number().optional(),
 	month2Income: yup.number().optional(),
 	month3Income: yup.number().optional(),

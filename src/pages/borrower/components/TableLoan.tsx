@@ -1,7 +1,10 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { Badge, Collapse, CollapseProps, Table } from "antd";
 import { MAP_BADGE_COLOR_STATUS } from "../../../constants/general.constant";
 import { tApplicationStatusName } from "../../../types/common.type";
+
+import { ITablePaginationConfig } from "../../../interface/pagination.interface";
+import { ILoan } from "../../../interface/borrower.interface";
 
 interface LoanData {
 	key: string;
@@ -13,8 +16,17 @@ interface LoanData {
 	status: string;
 }
 
-const TableLoan: React.FC = () => {
-	const data: LoanData[] = [];
+type TableLoanProps = {
+	data: ILoan[]
+}
+
+const TableLoan: React.FC<TableLoanProps> = ({ data }) => {
+	// const data: ILoan[] = [];
+	const [paginationConfig, setPaginationConfig] = useState<ITablePaginationConfig>({
+		current: 0,
+		pageSize: 20,
+		total: data.length || 0
+	})
 
 	const columns = [
 		{
@@ -43,13 +55,13 @@ const TableLoan: React.FC = () => {
 			title: "Loan Amount",
 			dataIndex: "loanAmount",
 			key: "loanAmount",
-			render: (text: string) => <span style={{ color: "green" }}>{text}</span>,
+			render: (text: string) => <span>SGD {text}</span>,
 		},
 		{
 			title: "Outstanding Amount",
 			dataIndex: "outstandingAmount",
 			key: "outstandingAmount",
-			render: (text: string) => <span style={{ color: "red" }}>{text}</span>,
+			render: (text: string) => <span>{text}</span>,
 		},
 		{
 			title: "Status",
@@ -62,8 +74,14 @@ const TableLoan: React.FC = () => {
 	const collapseItem: CollapseProps["items"] = [
 		{
 			key: "1",
-			label: "List of loans",
-			children: <Table dataSource={data} columns={columns}></Table>,
+			label: <span className="font-semibold">List of loans ({paginationConfig?.total})</span>,
+			children: <Table dataSource={data} columns={columns} pagination={{
+				pageSize: paginationConfig?.pageSize ? paginationConfig?.pageSize : 20,
+				current: paginationConfig?.current ? paginationConfig?.current + 1 : 1,
+				total: paginationConfig?.total ? paginationConfig?.total : 0,
+				pageSizeOptions: [20, 50, 100],
+				showSizeChanger: true
+			}} />,
 		},
 	];
 

@@ -1,9 +1,20 @@
-import dayjs from "dayjs";
-import { tLocalStorageKey, tSessionStorageKey } from "../types/common.type";
+import { BaseType } from "antd/es/typography/Base";
+import dayjs, { Dayjs } from "dayjs";
+import {
+	COMMON_CHECK_STATUS,
+	COMMON_RESULT_SUMMARY,
+	DASH,
+	TOAST_MESSAGE
+} from "../constants/general.constant";
 import { CURRENCY_REGEX } from "../constants/regex.constant";
-import borrowerApi from "../api/module/borrower.api";
-import { COMMON_CONFIG_KEYS } from "../constants/general.constant";
 import { IOption } from "../interface/general.interface";
+import {
+	tLocalStorageKey,
+	tSessionStorageKey
+} from "../types/common.type";
+import axios from "axios";
+import { IErrorsResponse } from "../interface/api.interface";
+import { toast } from "react-toastify";
 
 export const parseJSON = <T>(value: string | null): T | string | null => {
 	try {
@@ -119,10 +130,53 @@ export const getCurrencyCode = (currency: string): string => {
 	return currency.split("_")[0].toUpperCase();
 };
 
+export const getColorTextDiligence = (
+	status?: string
+): BaseType | undefined => {
+
+	switch (status?.trim()) {
+		case COMMON_RESULT_SUMMARY.OK:
+		case COMMON_CHECK_STATUS.PASS:
+			return "success";
+		case COMMON_CHECK_STATUS.FAIL:
+		case COMMON_RESULT_SUMMARY.ATTENTION:
+			return "danger";
+		default:
+			return undefined;
+	}
+};
+
+
+export const filterNonEmptyValues = (array: string[]): string[] => {
+  return array.filter(value => value.trim() !== "");
+};
 export const getFutureDate = (days: number, format = "DD/MM/YYYY"): string => {
 	return dayjs().add(days, 'day').utc().format();
 }
 
 export const calcAdminFee = (loanAmount: number, adminFeeRate: number, currencyCode: string) => {
-	return `${currencyCode} ${formatCurrency(loanAmount * adminFeeRate)}`;
+	return `${currencyCode} ${formatCurrency(loanAmount * adminFeeRate / 100)}`;
 }
+
+export const convertToPercent = (decimalString?: string | null): string => {
+	if (!decimalString) return DASH;
+
+	if (isNaN(parseFloat(decimalString))) return '';
+
+	return `${parseFloat(decimalString) * 100}%`;
+};
+
+export const calculateFutureDate = (days: number): Dayjs => {
+  return dayjs().add(days, "day").utc();
+};
+
+export const handleApiResponseError = (error: unknown) => {
+	if (axios.isAxiosError<IErrorsResponse>(error)) {
+		const errorMessage =error.response?.data?.properties?.message || TOAST_MESSAGE.UNEXPECTED_ERROR_MESSAGE;
+		toast.error(errorMessage);
+	} else if (error instanceof Error) {
+		toast.error(error.message);
+	} else {
+		toast.error(TOAST_MESSAGE.UNEXPECTED_ERROR_MESSAGE);
+	}
+};

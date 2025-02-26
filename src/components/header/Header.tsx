@@ -13,11 +13,15 @@ import globalSearchApi from "../../api/module/global.search.api";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import useDebounce from "../../hooks/useDebounce";
-import { IGlobalSearch, IGroupedOption } from "../../interface/global.search.interface";
+import {
+	IGlobalSearch,
+	IGroupedOption,
+} from "../../interface/global.search.interface";
 import { setSidebarCollapsed } from "../../redux/slice/sidebarSlice";
 import "./header.scss";
 import { ROUTES } from "../../constants/routes.constant";
 import { MAP_LOAN_TYPE_NAME } from "../../constants/general.constant";
+import logo from "../../assets/header-logo.png";
 
 const { Text } = Typography;
 const { Header: AntdHeader } = Layout;
@@ -103,8 +107,11 @@ const Header: React.FC = () => {
 	return (
 		<AntdHeader className="custom-header">
 			{/* Sidebar Toggle and Title */}
-			<div className="header-left">
-				<MenuOutlined className="menu-icon" onClick={toggleCollapseSidebar} />
+			<div
+				className="header-left cursor-pointer"
+				onClick={() => navigate(ROUTES.CREATE_BORROWER)}
+			>
+				<img srcSet={logo} alt="logo" />
 				<Text className="header-title">Monday Portal</Text>
 			</div>
 

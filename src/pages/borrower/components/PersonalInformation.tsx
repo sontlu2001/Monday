@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import DatePickerField from "../../../components/form/DatePickerField";
 import PhoneNumberInput from "../../../components/form/PhoneNumber";
 import SelectInputField from "../../../components/form/SelectInputField";
@@ -8,6 +8,7 @@ import { VALIDATION_MESSAGES } from "../../../constants/validation.constant";
 import { useBorrowerDetailContext } from "../../../context/BorrowerDetailContext";
 import { IBorrower, IBorrowerDetail } from "../../../interface/borrower.interface";
 import IdNumber from "./IdNumber";
+import { countries, idTypes } from "../constants/borrower.constant";
 
 const PersonalInformation = () => {
   const { configOptions } = useBorrowerDetailContext();
@@ -31,6 +32,15 @@ const PersonalInformation = () => {
   }, [errors.phoneCode, setError, clearErrors]);
 
   const configOptionsMemo = useMemo(() => configOptions, [configOptions]);
+  const idType = useWatch({
+    control,
+    name: "idType",
+  });
+
+  const countryAddress = useWatch({
+    control,
+    name: "countryAddress",
+  });
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2">
@@ -43,13 +53,14 @@ const PersonalInformation = () => {
         required
         placeholder="Select ID Type"
       />
-      <DatePickerField
-        control={control}
-        label="ID Expiry Date"
-        placeholder="Select Expiry Date"
-        name="idExpiryDate"
-        required
-      />
+      {idType !== idTypes.NRIC && (
+        <DatePickerField
+          control={control}
+          label="ID Expiry Date"
+          placeholder="Select Expiry Date"
+          name="idExpiryDate"
+        />
+      )}
       <TextInputField
         control={control}
         name="fullName"
@@ -62,7 +73,7 @@ const PersonalInformation = () => {
         phoneCode="phoneCode"
         control={control}
         phoneName="handPhone"
-        placeHolder="Enter Phone Number"
+        inputProps={{ placeholder: "Enter Phone Number" }}
         label="Mobile Number"
         required
       />
@@ -112,6 +123,7 @@ const PersonalInformation = () => {
         label="Type of Residential Property"
         placeholder="Select Type of Residential Property"
         options={configOptionsMemo.listTypeOfResidential}
+        required={countryAddress === countries.SINGAPORE}
       />
       <SelectInputField
         control={control}
@@ -119,6 +131,7 @@ const PersonalInformation = () => {
         label="Property Ownership"
         placeholder="Select Property Ownership"
         options={configOptionsMemo.listPropertyOwnerships}
+        required={countryAddress === countries.SINGAPORE}
       />
       <SelectInputField
         showSearch
@@ -127,18 +140,21 @@ const PersonalInformation = () => {
         label="Country"
         placeholder="Select Country"
         options={configOptionsMemo.listCountries}
+        required={countryAddress === countries.SINGAPORE}
       />
       <TextInputField
         control={control}
         name="blk"
         label="Blk"
         placeholder="Enter Blk"
+        required={countryAddress === countries.SINGAPORE}
       />
       <TextInputField
         control={control}
         name="street"
         label="Street"
         placeholder="Enter Street"
+        required={countryAddress === countries.SINGAPORE}
       />
       <TextInputField
         control={control}
@@ -157,6 +173,7 @@ const PersonalInformation = () => {
         name="postalCode"
         label="Postal Code"
         placeholder="Enter Postal Code"
+        required={countryAddress === countries.SINGAPORE}
       />
       <TextInputField
         control={control}

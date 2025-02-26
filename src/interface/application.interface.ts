@@ -6,6 +6,7 @@ export interface IApplication {
 	id: number;
 	applicationType: string;
 	applicationProductType: string;
+	loanId?: number;
 	loanType: tLoanType;
 	loanPurpose: string;
 	loanPurposeOther: string;
@@ -36,6 +37,7 @@ export interface IApplication {
 	frdAppId: string;
 	source: string;
 	borrower: IBorrower;
+	lastModifiedDate: string;
 }
 
 export interface IApplicationSearchInput {
@@ -103,17 +105,14 @@ export interface IApplicationStatistics {
 	unsecured: IStatusApplication;
 	secured: IStatusApplication;
 }
-export interface IDueDiligence {
-	id: number;
-	checkType: string;
-	status: string;
-	mlcbData: {
-		
-	}
+export interface ICreateTask {
+	job_id: string;
+	check_type: string;
 }
-
 export interface IRepaymentSchedule {
-	id: number;
+	id?: number;
+	key?: number | string;
+	date: string;
 	principalAmount: number;
 	interestAmount: number;
 	totalAmount: number;

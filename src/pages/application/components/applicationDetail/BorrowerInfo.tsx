@@ -14,7 +14,13 @@ const BorrowerInfo = () => {
 			<ApplicationCard title={<p className="font-medium">Borrower Information</p>}>
 				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-2">
 					<InfoDisplay value={applicationDetail.id} label="ID Number:" />
-					<InfoDisplay value={applicationDetail.applicationType} label="ID Type:" />
+					<InfoDisplay
+						value={getMasterDataName(
+							configOptions?.listIdType,
+							applicationDetail?.borrower?.idType
+						)}
+						label="ID Type:"
+					/>
 					<InfoDisplay
 						value={formatDate(applicationDetail.dateOfApplication)}
 						label="ID Expiry Date:"
@@ -31,7 +37,7 @@ const BorrowerInfo = () => {
 					<InfoDisplay
 						value={getMasterDataName(
 							configOptions.listNationalities,
-							applicationDetail.borrower.nationality
+							applicationDetail?.borrower?.nationality
 						)}
 						label="Nationality:"
 					/>

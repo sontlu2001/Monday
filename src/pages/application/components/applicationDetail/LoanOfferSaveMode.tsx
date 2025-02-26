@@ -1,19 +1,20 @@
 import InfoDisplay from '../../../../components/common/InfoDisplay';
 import { useApplicationDetailContext } from '../../../../context/ApplicationDetailContext';
-import { calcAdminFee, formatCurrency, formatDate, getFutureDate, getMasterDataName } from '../../../../utils/utils';
+import { calcAdminFee, calculateFutureDate, formatCurrency, formatDate, getFutureDate, getMasterDataName } from '../../../../utils/utils';
 import SelectInputField from '../../../../components/form/SelectInputField';
 import { useFormContext } from 'react-hook-form';
 import { MAP_LOAN_TYPE_NAME } from '../../../../constants/general.constant';
 import DatePickerField from '../../../../components/form/DatePickerField';
 import { useEffect } from 'react';
 import { ILoanOffer } from '../../../../interface/loanOffer.interface';
+import { TextInputField } from '../../../../components/form/TextInputField';
 
 const LoanOfferSaveMode = () => {
   const { applicationDetail, configOptions } = useApplicationDetailContext();
   const { handleSubmit, control, reset } = useFormContext<ILoanOffer>();
 
   useEffect(() => {
-    const firstPayDate = applicationDetail?.loanOffer.firstPayDate ?? getFutureDate(30);
+    const firstPayDate = applicationDetail?.loanOffer?.firstPayDate ?? getFutureDate(30);
   
     reset((prevData: any) => ({
       ...prevData,
@@ -21,6 +22,7 @@ const LoanOfferSaveMode = () => {
       interestFrequency: applicationDetail?.loanOffer?.interestFrequency,
       payFrequency: applicationDetail?.loanOffer?.payFrequency,
       interestCalculateMethod: applicationDetail?.loanOffer?.interestCalculateMethod,
+      lateInterest: applicationDetail?.loanOffer?.lateInterest,
     }));
   }, [applicationDetail, reset]);
 
@@ -29,7 +31,7 @@ const LoanOfferSaveMode = () => {
         <InfoDisplay value={MAP_LOAN_TYPE_NAME.get(applicationDetail?.loanType)} label="Loan Type:" />
         <InfoDisplay value={applicationDetail?.loanPurpose} label="Loan Purpose:" />
         <InfoDisplay value={formatDate(applicationDetail?.dateOfApplication, "DD/MM/YYYY")} label="Application Date:" />
-        <InfoDisplay value={`${applicationDetail?.borrower.currency} ${formatCurrency(applicationDetail?.loanOffer?.loanAmountOffer || 0)}`} label="Loan Amount Offer:" />
+        <InfoDisplay value={`SGD ${formatCurrency(applicationDetail?.loanOffer?.loanAmountOffer || 0)}`} label="Loan Amount Offer:" />
         <div className="col-span-2">
           <InfoDisplay value={`${applicationDetail?.tenorMonths} Months`} label="Loan Tenor Offer:" />
         </div>
@@ -45,6 +47,7 @@ const LoanOfferSaveMode = () => {
           name="firstPayDate"
           label="1st Installment Date:"
           layout='horizontal'
+          minDate={calculateFutureDate(30)}
         />
         <InfoDisplay value={applicationDetail?.loanOffer?.book1} label="Book 1:" />
         <div className="col-span-2">
@@ -78,10 +81,10 @@ const LoanOfferSaveMode = () => {
           <p className="font-bold">Fees</p>
         </div>
         <InfoDisplay value={applicationDetail?.loanOffer?.adminFeeRate || 0} label="Admin Fee (%)" />
-        <InfoDisplay value={calcAdminFee(applicationDetail?.loanOffer?.loanAmountOffer, applicationDetail?.loanOffer?.adminFeeRate, applicationDetail?.borrower?.currency)} label="Admin Fee :" />
+        <InfoDisplay value={calcAdminFee(applicationDetail?.loanOffer?.loanAmountOffer, applicationDetail?.loanOffer?.adminFeeRate, "SGD")} label="Admin Fee :" />
         <div></div>
-        <InfoDisplay value={applicationDetail?.loanOffer?.lateInterest || 0} label="Late Interest (%)" />
-        <InfoDisplay value={`${applicationDetail?.borrower.currency} ${formatCurrency(applicationDetail?.loanOffer?.lateFee || 0)}`} label="Late Fee :" />
+        <TextInputField layout='horizontal' control={control} name="lateInterest" label="Late Interest (%)" />
+        <InfoDisplay value={`SGD ${formatCurrency(applicationDetail?.loanOffer?.lateFee || 0)}`} label="Late Fee :" />
       </div>
   )
 }
